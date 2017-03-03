@@ -52,7 +52,7 @@ class BinaryTreeTest : public ::testing::Test {
 TEST_F(BinaryTreeTest, InsertNodeToEmptyTree) {
 	auto retVal = this->tree->InsertNode(1);
 	ASSERT_TRUE(retVal.first);
-	ASSERT_NE(retVal.second, nullptr);
+	ASSERT_EQ(retVal.second, nullptr);
 }
 
 TEST_F(BinaryTreeTest, InsertDuplicateNode) {
@@ -63,7 +63,47 @@ TEST_F(BinaryTreeTest, InsertDuplicateNode) {
 	EXPECT_EQ(duplicate.second, firstNode.second);
 }
 
-// AXIOM TESTS
+TEST_F(BinaryTreeTest, InsertNodeToNotEmptyTree) {
+	this->tree->InsertNode(1);
+	auto retVal = this->tree->InsertNode(2);
+
+	ASSERT_TRUE(retVal.first);
+	ASSERT_NE(retVal.second, nullptr);
+}
+
+
+TEST_F(BinaryTreeTest, DeleteNodeFromEmptyTree) {
+	EXPECT_FALSE(this->tree->DeleteNode(1));
+}
+
+TEST_F(BinaryTreeTest, DeleteExistingNode) {
+	this->tree->InsertNode(1);
+	
+	EXPECT_TRUE(this->tree->DeleteNode(1));
+}
+
+TEST_F(BinaryTreeTest, DeleteNonExistingNode) {
+	this->tree->InsertNode(1);
+
+	EXPECT_FALSE(this->tree->DeleteNode(2));
+}
+
+
+TEST_F(BinaryTreeTest, FindNodeInEmptyTree) {
+	EXPECT_EQ(this->tree->FindNode(1), nullptr);
+}
+
+TEST_F(BinaryTreeTest, FindExistingNode) {
+	auto node = this->tree->InsertNode(1);
+	
+	EXPECT_EQ(this->tree->FindNode(1), node.second);
+} 
+
+TEST_F(BinaryTreeTest, FindNonExistingNode) {
+	this->tree->InsertNode(1);
+
+	EXPECT_EQ(this->tree->FindNode(2), nullptr);
+}
 
 // MAIN
 
