@@ -460,3 +460,5 @@ ENV/
 .ropeproject
 
 # End of https://www.gitignore.io/api/jetbrains,c,c++,java,python,latex,cmake
+
+googletest-master
