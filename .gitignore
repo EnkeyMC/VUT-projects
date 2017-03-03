@@ -468,3 +468,8 @@ ENV/
 .ropeproject
 
 # End of https://www.gitignore.io/api/jetbrains,c,c++,java,python,latex,cmake
+
+
+# My stuff
+
+cmake-build-debug/
