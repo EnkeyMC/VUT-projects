@@ -51,8 +51,8 @@ class BinaryTreeTest : public ::testing::Test {
 
 TEST_F(BinaryTreeTest, InsertNodeToEmptyTree) {
 	auto retVal = this->tree->InsertNode(1);
-	ASSERT_TRUE(retVal.first);
-	ASSERT_EQ(retVal.second, nullptr);
+	EXPECT_TRUE(retVal.first);
+	EXPECT_NE(retVal.second, nullptr);
 }
 
 TEST_F(BinaryTreeTest, InsertDuplicateNode) {
@@ -67,8 +67,8 @@ TEST_F(BinaryTreeTest, InsertNodeToNotEmptyTree) {
 	this->tree->InsertNode(1);
 	auto retVal = this->tree->InsertNode(2);
 
-	ASSERT_TRUE(retVal.first);
-	ASSERT_NE(retVal.second, nullptr);
+	EXPECT_TRUE(retVal.first);
+	EXPECT_NE(retVal.second, nullptr);
 }
 
 
@@ -103,6 +103,78 @@ TEST_F(BinaryTreeTest, FindNonExistingNode) {
 	this->tree->InsertNode(1);
 
 	EXPECT_EQ(this->tree->FindNode(2), nullptr);
+}
+
+
+// AXIOM TESTS
+
+// Fixture class for axiom testing
+
+class BinaryTreeAxiomTest : public ::testing::Test {
+	protected:
+		BinaryTree* tree;
+
+		BinaryTreeAxiomTest() {
+			this->tree = new BinaryTree();
+
+			// Fill the tree with some nodes for testing
+			for (int i = 0; i < 15; i++) {
+				this->tree->InsertNode(i);
+			}
+		}
+
+		~BinaryTreeAxiomTest() {
+			delete this->tree;
+		}
+};
+
+
+TEST_F(BinaryTreeAxiomTest, BlackLeafTest) {
+	std::vector<BinaryTree::Node_t *> leafNodes;
+	this->tree->GetLeafNodes(leafNodes);
+
+	for(auto leaf : leafNodes) {
+		EXPECT_EQ(leaf->color, BinaryTree::BLACK);
+	}
+}
+
+TEST_F(BinaryTreeAxiomTest, BlackChildrenTest) {
+	std::vector<BinaryTree::Node_t *> nodes;
+	this->tree->GetAllNodes(nodes);
+
+	for(auto node : nodes) {
+		if (node->color == BinaryTree::RED) {
+			EXPECT_EQ(node->pLeft->color, BinaryTree::BLACK);
+			EXPECT_EQ(node->pRight->color, BinaryTree::BLACK);
+		}
+	}
+}
+
+TEST_F(BinaryTreeAxiomTest, BlackNodesInPathTest) {
+	std::vector<BinaryTree::Node_t *> leafNodes;
+	this->tree->GetLeafNodes(leafNodes);
+
+	BinaryTree::Node_t* currentNode;
+	int blackNodeCount, prevBlackNodeCount = -1;
+
+	for(auto leaf : leafNodes) {
+		currentNode = leaf;
+		blackNodeCount = 0;
+
+		while (currentNode != nullptr) {
+			if (currentNode->color == BinaryTree::BLACK) {
+				blackNodeCount++;
+			}
+
+			currentNode = currentNode->pParent;
+		}
+
+		if (prevBlackNodeCount != -1) {
+			ASSERT_EQ(blackNodeCount, prevBlackNodeCount);
+		} else {
+			prevBlackNodeCount = blackNodeCount;
+		}
+	}
 }
 
 // MAIN
