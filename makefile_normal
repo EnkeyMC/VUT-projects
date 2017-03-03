@@ -1,0 +1,6 @@
+FILENAME=document
+
+convert:
+	latex $(FILENAME).tex
+	dvips $(FILENAME).dvi
+	ps2pdf $(FILENAME).ps
