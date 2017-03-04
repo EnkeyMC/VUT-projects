@@ -87,16 +87,13 @@ TEST_F(MatrixUnaryTest, GetValueFromMatrixInvalid) {
 
 TEST_F(MatrixUnaryTest, SolveEquation2x2) {
 	this->matrix = new Matrix(2,2);
-	std::vector<std::vector<double>> values {
+	this->matrix->set({
 		{4,2},
 		{5,-3}
-	};
-	std::vector<double> b {6,13};
+	});
 	std::vector<double> expectedResult {2,-1};
 
-	this->matrix->set(values);
-
-	auto result = this->matrix->solveEquation(b);
+	auto result = this->matrix->solveEquation({6,13});
 
 	ASSERT_EQ(result.size(), expectedResult.size());
 
@@ -107,23 +104,20 @@ TEST_F(MatrixUnaryTest, SolveEquation2x2) {
 
 TEST_F(MatrixUnaryTest, SolveEquationInvalidB) {
 	this->matrix = new Matrix();
-	std::vector<double> b {2,2};
 
-	EXPECT_ANY_THROW(this->matrix->solveEquation(b));
+	EXPECT_ANY_THROW(this->matrix->solveEquation({2,2}));
 }
 
 TEST_F(MatrixUnaryTest, SolveEquationNotSquare) {
 	this->matrix = new Matrix(2,3);
-	std::vector<double> b {1,1,1};
 
-	EXPECT_ANY_THROW(this->matrix->solveEquation(b));
+	EXPECT_ANY_THROW(this->matrix->solveEquation({1,1,1}));
 }
 
 TEST_F(MatrixUnaryTest, SolveEquationSingular1x1) {
 	this->matrix = new Matrix();
-	std::vector<double> b {0};
 
-	EXPECT_ANY_THROW(this->matrix->solveEquation(b));
+	EXPECT_ANY_THROW(this->matrix->solveEquation({0}));
 }
 
 TEST_F(MatrixUnaryTest, SolveEquationSingular3x3) {
@@ -141,11 +135,9 @@ TEST_F(MatrixUnaryTest, SolveEquation4x4) {
 		{1,-1,-1,-1},
 		{1,1,1,1}
 	});
-
-	std::vector<double> b {4,-11,-8,10};
 	std::vector<double> expectedResult {1,2,3,4};
 
-	auto result = this->matrix->solveEquation(b);
+	auto result = this->matrix->solveEquation({4,-11,-8,10});
 
 	ASSERT_EQ(result.size(), expectedResult.size());
 	for (int i = 0; i < result.size(); ++i)
@@ -194,27 +186,21 @@ TEST_F(MatrixBinaryTest, OperatorPlusTest) {
 	this->matrix2 = new Matrix(3,3);
 	Matrix* expectedResultMatrix = new Matrix(3,3);
 
-	std::vector<std::vector< double >> matrix1vals {
+	this->matrix1->set({
 		{ 0,  1, 5},
 		{ 8,  5,23},
 		{47,154, 2}
-	};
-
-	std::vector<std::vector< double >> matrix2vals {
+	});
+	this->matrix2->set({
 		{ 5,  4,  3},
 		{10, 20, 30},
 		{ 7,-54,-12}
-	};
-
-	std::vector<std::vector< double >> resultVals {
+	});
+	expectedResultMatrix->set({
 		{ 5,  5,  8},
 		{18, 25, 53},
 		{54,100,-10}
-	};
-
-	this->matrix1->set(matrix1vals);
-	this->matrix2->set(matrix2vals);
-	expectedResultMatrix->set(resultVals);
+	});
 
 	EXPECT_EQ(*this->matrix1 + *this->matrix2, *expectedResultMatrix);
 
@@ -233,24 +219,18 @@ TEST_F(MatrixBinaryTest, OperatorMultiplyTest) {
 	this->matrix2 = new Matrix(2,2);
 	Matrix* expectedResultMatrix = new Matrix(2,2);
 
-	std::vector<std::vector< double >> matrix1vals {
+	this->matrix1->set({
 		{1,2},
 		{3,4}
-	};
-
-	std::vector<std::vector< double >> matrix2vals {
+	});
+	this->matrix2->set({
 		{5,6},
 		{7,8}
-	};
-
-	std::vector<std::vector< double >> resultVals {
+	});
+	expectedResultMatrix->set({
 		{19,22},
 		{43,50}
-	};
-
-	this->matrix1->set(matrix1vals);
-	this->matrix2->set(matrix2vals);
-	expectedResultMatrix->set(resultVals);
+	});
 
 	EXPECT_EQ(*this->matrix1 * *this->matrix2, *expectedResultMatrix);
 
@@ -268,18 +248,14 @@ TEST_F(MatrixBinaryTest, OperatorMultiplyByDblTest) {
 	this->matrix1 = new Matrix(2,2);
 	this->matrix2 = new Matrix(2,2); // expected result
 
-	std::vector<std::vector<double>> values{
+	this->matrix1->set({
 		{5,3},
 		{4,2}
-	};
-
-	std::vector<std::vector<double>> result{
+	});
+	this->matrix2->set({
 		{10,6},
 		{8,4}
-	};	
-
-	this->matrix1->set(values);
-	this->matrix2->set(result);
+	});
 
 	EXPECT_EQ(*this->matrix1 * 2.0, *this->matrix2);
 }
