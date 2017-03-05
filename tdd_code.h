@@ -105,6 +105,7 @@ protected:
     // Zde muzete doplnit neverejne metody a datove polozky potrebne pro vasi
     // implementaci.
     //============================================================================//
+    Element_t *pHead;
 };
 
 #endif // TDD_CODE_H_

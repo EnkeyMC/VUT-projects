@@ -34,32 +34,102 @@
 
 PriorityQueue::PriorityQueue()
 {
-
+	this->pHead = NULL;
 }
 
 PriorityQueue::~PriorityQueue()
 {
+	Element_t* tmp = this->pHead;
 
+	while (tmp != NULL) {
+		tmp = tmp->pNext;
+		delete tmp;
+	}
 }
 
 void PriorityQueue::Insert(int value)
 {
+	Element_t* inserted = new Element_t;
+	inserted->pNext = NULL;
+	inserted->pPrev = NULL;
+	inserted->value = value;
 
+	if (this->pHead == NULL) {
+		this->pHead = inserted;
+	} else {
+		Element_t* ele = this->pHead;
+		
+		while (ele != NULL) {
+			if (ele->value >= value) {
+				Element_t* prev = ele->pPrev;
+
+				if (prev != NULL)
+					prev->pNext = inserted;
+				else
+					this->pHead = inserted;
+				
+				ele->pPrev = inserted;
+				inserted->pPrev = prev;
+				inserted->pNext = ele;
+
+				ele = NULL;  // END LOOP
+			} else if (ele->pNext == NULL) {
+				ele->pNext = inserted;
+				inserted->pPrev = ele;
+
+				ele = NULL;  // END LOOP
+			} else {
+				ele = ele->pNext;  // CONTINUE LOOP
+			}
+		}
+	}
 }
 
 bool PriorityQueue::Remove(int value)
 {
+	Element_t* tmp = this->pHead;
+
+	while (tmp != NULL) {
+		if (tmp->value == value) {
+			if (tmp->pPrev == NULL) {
+				this->pHead = tmp->pNext;
+			}else{
+				tmp->pPrev->pNext = tmp->pNext;
+			}
+
+			if (tmp->pNext != NULL) {
+				tmp->pNext->pPrev = tmp->pPrev;
+			}
+
+			delete tmp;
+
+			return true;
+		}
+
+		tmp = tmp->pNext;
+	}
+
     return false;
 }
 
 PriorityQueue::Element_t *PriorityQueue::Find(int value)
 {
+	Element_t* tmp = this->pHead;
+
+	while (tmp != NULL) {
+		if (tmp->value == value) {
+			return tmp;
+		}
+
+		tmp = tmp->pNext;
+	}
+
     return NULL;
 }
 
 PriorityQueue::Element_t *PriorityQueue::GetHead()
 {
-    return NULL;
+    return this->pHead;
 }
 
 /*** Konec souboru tdd_code.cpp ***/
