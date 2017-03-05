@@ -45,6 +45,19 @@ TEST_F(MatrixUnaryTest, SetSingleValue) {
 	EXPECT_TRUE(this->matrix->set(0,0,5.0));
 }
 
+TEST_F(MatrixUnaryTest, SetSingleValue3x4) {
+	int cols = 3;
+	int rows = 4;
+
+	this->matrix = new Matrix(rows, cols);
+
+	for (int r = 0; r < rows; r++) {
+		for (int c = 0; c < cols; c++) {
+			EXPECT_TRUE(this->matrix->set(r, c, 42));
+		}
+	}
+}
+
 TEST_F(MatrixUnaryTest, SetSingleValueInvalid) {
 	this->matrix = new Matrix();
 
@@ -69,7 +82,18 @@ TEST_F(MatrixUnaryTest, SetValuesFromVectorInvalid) {
 		{3,4}
 	};
 
-	EXPECT_FALSE(this->matrix->set(values));
+	EXPECT_FALSE(this->matrix->set({
+		{1,2},
+		{3,4},
+		{5,6}
+	}));
+
+	EXPECT_FALSE(this->matrix->set({
+		{1,2,3},
+		{3,4,5}
+	}));
+
+	EXPECT_FALSE(this->matrix->set({}));
 }
 
 TEST_F(MatrixUnaryTest, GetValueFromMatrix) {
@@ -80,9 +104,17 @@ TEST_F(MatrixUnaryTest, GetValueFromMatrix) {
 
 TEST_F(MatrixUnaryTest, GetValueFromMatrixInvalid) {
 	this->matrix = new Matrix();
-	double retVal = this->matrix->get(1,1);
+	EXPECT_ANY_THROW(this->matrix->get(1,1));
+}
 
-	EXPECT_FALSE(retVal == retVal); // NaN is not equal to NaN
+TEST_F(MatrixUnaryTest, SolveEquation1x1) {
+	this->matrix = new Matrix();
+	this->matrix->set(0,0, 3);
+
+	auto result = this->matrix->solveEquation({4});
+
+	ASSERT_EQ(result.size(), 1);
+	EXPECT_DOUBLE_EQ(result[0], 4.0/3.0);
 }
 
 TEST_F(MatrixUnaryTest, SolveEquation2x2) {
@@ -98,6 +130,42 @@ TEST_F(MatrixUnaryTest, SolveEquation2x2) {
 	ASSERT_EQ(result.size(), expectedResult.size());
 
 	for (int i = 0; i < result.size(); i++) {
+		ASSERT_EQ(result[i], expectedResult[i]);
+	}
+}
+
+TEST_F(MatrixUnaryTest, SolveEquation2x2Fractional) {
+	this->matrix = new Matrix(2,2);
+	this->matrix->set({
+		{1.0/5.0, 4.0/3.0},
+		{4.0/9.0, 3.0/5.0}
+	});
+	std::vector<double> expectedResult {17955.0/1276.0, -135.0/319.0};
+
+	auto result = this->matrix->solveEquation({9.0/4.0, 6});
+
+	ASSERT_EQ(result.size(), expectedResult.size());
+
+	for (int i = 0; i < result.size(); i++) {
+		ASSERT_DOUBLE_EQ(result[i], expectedResult[i]);
+	}
+}
+
+TEST_F(MatrixUnaryTest, SolveEquation4x4) {
+	this->matrix = new Matrix(4,4);
+	this->matrix->set({
+		{4,2,0,-1},
+		{8,-3,1,-4},
+		{1,-1,-1,-1},
+		{1,1,1,1}
+	});
+	std::vector<double> expectedResult {1,2,3,4};
+
+	auto result = this->matrix->solveEquation({4,-11,-8,10});
+
+	ASSERT_EQ(result.size(), expectedResult.size());
+	for (int i = 0; i < result.size(); ++i)
+	{
 		ASSERT_EQ(result[i], expectedResult[i]);
 	}
 }
@@ -127,24 +195,6 @@ TEST_F(MatrixUnaryTest, SolveEquationSingular3x3) {
 	EXPECT_ANY_THROW(this->matrix->solveEquation(std::vector<double>(3,0)));
 }
 
-TEST_F(MatrixUnaryTest, SolveEquation4x4) {
-	this->matrix = new Matrix(4,4);
-	this->matrix->set({
-		{4,2,0,-1},
-		{8,-3,1,-4},
-		{1,-1,-1,-1},
-		{1,1,1,1}
-	});
-	std::vector<double> expectedResult {1,2,3,4};
-
-	auto result = this->matrix->solveEquation({4,-11,-8,10});
-
-	ASSERT_EQ(result.size(), expectedResult.size());
-	for (int i = 0; i < result.size(); ++i)
-	{
-		ASSERT_EQ(result[i], expectedResult[i]);
-	}
-}
 
 // Binary operands test
 
