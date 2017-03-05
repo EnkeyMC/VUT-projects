@@ -39,11 +39,13 @@ PriorityQueue::PriorityQueue()
 
 PriorityQueue::~PriorityQueue()
 {
-	Element_t* tmp = this->pHead;
+	Element_t* ele = this->pHead;
+	Element_t* nextEle;
 
-	while (tmp != NULL) {
-		tmp = tmp->pNext;
-		delete tmp;
+	while (ele != NULL) {
+		nextEle = ele->pNext;
+		delete ele;
+		ele = nextEle;
 	}
 }
 
