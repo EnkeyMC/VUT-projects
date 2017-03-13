@@ -1,1 +1,71 @@
-\documentclass[11pt, a4paper]{}
+\documentclass[11pt, a4paper, twocolumn]{article}
+
+\usepackage[left=1.5cm, text={18cm,25cm}, top=2.5cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[czech]{babel}
+\usepackage[IL2]{fontenc}
+\usepackage{times}
+
+\begin{document}
+	\begin{titlepage}
+		\begin{center}
+			{\linespread{0.75}
+				\Huge
+				\textsc{Fakulta informačních technologií\\ Vysoké učení technické v Brně}
+				\vspace{\stretch{0.382}}
+			}
+
+			{\linespread{0.8}
+				\LARGE
+				Typografie a publikování - 2. projekt\\
+				Sazba dokumentů a matematických výrazů
+				\vspace{\stretch{0.618}}
+			}
+		\end{center}		
+		{\Large 2017 \hfill Martin Omacht}
+	\end{titlepage}
+
+	\section{Úvod} % (fold)
+	\label{sec:úvod}
+	V této úloze si vyzkoušíme sazbu titulní strany, matematických vzorců, prostředí a dalších textových struktur obvyklých pro technicky zaměřené texty (například rovnice ... nebo definice ... na straně ...).
+
+	Na titulní straně je využito sázení nadpisu podle optického středu s využitím zlatého řezu. Tento postup byl probírán na přednášce.
+	% section úvod (end)
+
+	\section{Matematický text} % (fold)
+	\label{sec:matematický_text}
+	Nejprve se podíváme na sázení matematických symbolů a výrazů v plynulém textu. Pro množinu $V$označuje card($V$) kardinalitu $V$.
+	Pro množinu $V$ reprezentuje $V^\ast$ volný monoid generovaný množinou $V$ s operací konkatenace.
+	Prvek identity ve volném monoidu $V^*$ značíme symbolem $\varepsilon$.
+	Nechť $V^+ = V^\ast - \{\varepsilon\}$. Algebraicky je tedy $V^\ast$ volná pologrupa generovaná množinou $V$ s operací konkatenace.
+	Konečnou neprázdnou množinu $V$ nazvěme \emph{abeceda}.
+	Pro $\omega \in V^\ast$ označuje $|\omega|$ délku řetězce $\omega$. Pro $W \subseteq V$ označuje ... počet výskytů symbolů z ... v řetězci ... a ... určuje ...-tý symbol řetězce ...; například ....
+
+	Nyní zkusíme sazbu definic a vět s využitím balíku amsthm.
+
+	Definice: Bezkontextová gramatika je čtveřice ..., kde ... je totální abeceda,
+	... je abeceda terminálů, ... je startující symbol a ... je konečná množina pravidel
+	tvaru ..., kde ..., ... a ... je návěští tohoto pravidla. Nechť ... značí abecedu neterminálů.
+	Pokud ... , ... , ... provádí derivační krok z ... do ... podle pravidla ..., symbolicky píšeme 
+	... nebo zjednodušeně ... . Standardním způsobem definujeme ..., kde ... . Dále definujeme 
+	tranzitivní uzávěr ... a tranzitivně-reflexivní uzávěr ... .
+
+	Algoritmus můžeme uvádět podobně jako definice textově, nebo využít pseudokódu vysázeného ve vhodném prostředí (například algorithm2e).
+
+	Algoritmus: Algoritmus pro ověření bezkontextovosti gramatiky. Mějme gramatiku G = (N, T, P, S).
+	 * Pro každé pravidlo ... proveď test, zda ... na levé straně obsahuje právě jeden symbol z ... .
+	 * Pokud všechna pravidla splňují podmínku z kroku ..., tak je gramatika ... bezkontextová.
+
+	Definice: Jazyk definovaný gramatikou ... definujeme jako ... .
+
+	1.1 Podsekce obsahující větu
+
+	Definice: Nechť ... je libovolný jazyk. ... je bezkontextový jazyk, když a jen když ..., kde ... je libovolná bezkontextová gramatika.
+
+	Definice: Množinu ... nazýváme třídou bezkontextových jazyků.
+
+	Věta: Nechť .... Platí, že ....
+
+	Důkaz: Důkaz se provede pomocí Pumping lemma pro bezkontextové jazyky, kdy ukážeme, že není možné, aby platilo, což bude implikovat pravdivost věty ... .
+	% section matematický_text (end)
+\end{document}
