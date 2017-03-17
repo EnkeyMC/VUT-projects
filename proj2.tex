@@ -10,6 +10,9 @@
 \theoremstyle{definition}
 \newtheorem{definice}{Definice}[section]
 
+\theoremstyle{plain}
+\newtheorem{algoritmus}{Algoritmus}[section]
+
 \begin{document}
 	\begin{titlepage}
 		\begin{center}
@@ -53,19 +56,29 @@
 	Pokud $q: A \rightarrow \alpha \in P$, $\gamma,\delta \in V^*$, $G$ provádí derivační krok z $\gamma A \delta$ do $\gamma \alpha \delta$ podle pravidla $q: A \rightarrow \alpha$, symbolicky píšeme $\gamma A \delta \Rightarrow \gamma \alpha \delta [q: A \rightarrow \alpha]$ nebo zjednodušeně $\gamma A \delta \Rightarrow \gamma \alpha \delta$. Standardním způsobem definujeme $\Rightarrow^m$, kde $m \geq 0$. Dále definujeme tranzitivní uzávěr $\Rightarrow^+$ a tranzitivně-reflexivní uzávěr $\Rightarrow^*$.
 	\end{definice}
 
-	Algoritmus můžeme uvádět podobně jako definice textově, nebo využít pseudokódu vysázeného ve vhodném prostředí (například algorithm2e).
+	Algoritmus můžeme uvádět podobně jako definice textově, nebo využít pseudokódu vysázeného ve vhodném prostředí (například \texttt{algorithm2e}).
 
-	Algoritmus: Algoritmus pro ověření bezkontextovosti gramatiky. Mějme gramatiku G = (N, T, P, S).
-	 * Pro každé pravidlo ... proveď test, zda ... na levé straně obsahuje právě jeden symbol z ... .
-	 * Pokud všechna pravidla splňují podmínku z kroku ..., tak je gramatika ... bezkontextová.
+	\begin{algoritmus}
+	Algoritmus pro ověření bezkontextovosti gramatiky. Mějme gramatiku G = (N, T, P, S).
+		\begin{enumerate}
+	 		\item \label{prvniKrok} Pro každé pravidlo $p \in P$ proveď test, zda $p$ na levé straně obsahuje právě jeden symbol z $N$.
+	 		\item Pokud všechna pravidla splňují podmínku z kroku \ref{prvniKrok}, tak je gramatika $G$ bezkontextová.
+	 	\end{enumerate}
+	\end{algoritmus}
 
-	Definice: Jazyk definovaný gramatikou ... definujeme jako ... .
+	\begin{definice}
+	Jazyk definovaný gramatikou $G$ definujeme jako $L(G) = {w \in T^*|S \Rightarrow^* w}$.
+	\end{definice}
 
-	1.1 Podsekce obsahující větu
+	\subsection{Podsekce obsahující větu}
 
-	Definice: Nechť ... je libovolný jazyk. ... je bezkontextový jazyk, když a jen když ..., kde ... je libovolná bezkontextová gramatika.
+	\begin{definice}
+	Nechť $L$ je libovolný jazyk. $L$ je \emph{bezkontextový jazyk}, když a jen když $L = L(G)$, kde $G$ je libovolná bezkontextová gramatika.
+	\end{definice}
 
-	Definice: Množinu ... nazýváme třídou bezkontextových jazyků.
+	\begin{definice}
+	Množinu ... nazýváme třídou bezkontextových jazyků.
+	\end{definice}
 
 	Věta: Nechť .... Platí, že ....
 

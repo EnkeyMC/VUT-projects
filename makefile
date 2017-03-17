@@ -1,11 +1,10 @@
-HOST=merlin.fit.vutbr.cz
-USER=xomach00
-FILENAME=proj2
-DIRECTORY=ITY_project_2
-SSH_COMMAND="cd $(DIRECTORY) && make"
+FILE = proj2
 
-convert:
-	scp $(FILENAME).tex $(USER)@$(HOST):~/$(DIRECTORY)/
-	ssh $(USER)@$(HOST) $(SSH_COMMAND)
-	scp $(USER)@$(HOST):~/$(DIRECTORY)/$(FILENAME).pdf ./$(FILENAME).pdf
+all: $(FILE).ps
+	ps2pdf $<
 
+$(FILE).ps: $(FILE).dvi
+	dvips -t a4 $<
+
+$(FILE).dvi: $(FILE).tex
+	latex $<
