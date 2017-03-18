@@ -6,12 +6,14 @@
 \usepackage[IL2]{fontenc}
 \usepackage{times}
 \usepackage{amsthm}
+\usepackage{amssymb}
 
 \theoremstyle{definition}
 \newtheorem{definice}{Definice}[section]
 
 \theoremstyle{plain}
 \newtheorem{algoritmus}{Algoritmus}[section]
+\newtheorem{veta}{Věta}
 
 \begin{document}
 	\begin{titlepage}
@@ -73,15 +75,33 @@
 	\subsection{Podsekce obsahující větu}
 
 	\begin{definice}
-	Nechť $L$ je libovolný jazyk. $L$ je \emph{bezkontextový jazyk}, když a jen když $L = L(G)$, kde $G$ je libovolná bezkontextová gramatika.
+	Nechť $L$ je libovolný jazyk. $L$ je \emph{bezkontextový jazyk}, když a jen když $L = L(G)$, kde $G$ je libovolná bezkontextová.
 	\end{definice}
 
 	\begin{definice}
-	Množinu ... nazýváme třídou bezkontextových jazyků.
+	Množinu $\mathcal{L}_{CF} = \{L|L$ je bezkontextový jazyk$\}$ nazýváme \emph{třídou bezkontextových jazyků}.
 	\end{definice}
 
-	Věta: Nechť .... Platí, že ....
+	\begin{veta} \label{veta1}
+	Nechť $L_{abc} = \{a^n b^n c^n | n \geq 0\}$. Platí, že $L_{abc} \notin \mathcal{L}_{CF}$.
+	\end{veta}
 
-	Důkaz: Důkaz se provede pomocí Pumping lemma pro bezkontextové jazyky, kdy ukážeme, že není možné, aby platilo, což bude implikovat pravdivost věty ... .
+	\begin{proof}
+	Důkaz se provede pomocí Pumping lemma pro bezkontextové jazyky, kdy ukážeme, že není možné, aby platilo, což bude implikovat pravdivost věty \ref{veta1}.
+	\end{proof}
 	% section matematický_text (end)
+
+	\section{Rovnice a odkazy}
+	Složitější matematické formulace sázíme mimo plynulý text. Lze umístit několik výrazů na jeden řádek, ale pak je třeba tyto vhodně oddělit, například příkazem \quad. 
+
+	...
+
+	V rovnici (...) jsou využity tři typy závorek s různou explicitně definovanou velikostí.
+
+	...
+
+	V této větě vidíme, jak vypadá implicitní vysázení limity ... v normálním odstavci textu. Podobně je to i s dalšími symboly jako ... či ... . V případě vzorce ... jsme si vynutili méně úspornou sazbu příkazem \limits.
+
+	...
+	% section rovnice_a_odkazy (end)
 \end{document}

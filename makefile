@@ -8,3 +8,9 @@ $(FILE).ps: $(FILE).dvi
 
 $(FILE).dvi: $(FILE).tex
 	latex $<
+
+clear-all:
+	rm $(FILE).dvi
+	rm $(FILE).ps
+	rm $(FILE).pdf
+	rm $(FILE).log
