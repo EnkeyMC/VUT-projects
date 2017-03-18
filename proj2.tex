@@ -50,7 +50,7 @@
 
 	\section*{Úvod} % (fold)
 	\label{sec:úvod}
-	V této úloze si vyzkoušíme sazbu titulní strany, matematických vzorců, prostředí a dalších textových struktur obvyklých pro technicky zaměřené texty (například rovnice ... nebo definice ... na straně ...).
+	V této úloze si vyzkoušíme sazbu titulní strany, matematických vzorců, prostředí a dalších textových struktur obvyklých pro technicky zaměřené texty (například rovnice \eqref{rovnice1} nebo definice \ref{def_bezkontextova_gramatika} na straně \pageref{def_bezkontextova_gramatika}).
 
 	Na titulní straně je využito sázení nadpisu podle optického středu s využitím zlatého řezu. Tento postup byl probírán na přednášce.
 	% section úvod (end)
@@ -66,7 +66,7 @@
 
 	Nyní zkusíme sazbu definic a vět s využitím balíku \texttt{amsthm}.
 
-	\begin{definice}
+	\begin{definice} \label{def_bezkontextova_gramatika}
 	\emph{Bezkontextová gramatika} je čtveřice $G=(V,T,P,S)$, kde $V$ je totální abeceda,
 	$T \subseteq V$ je abeceda terminálů, $S \in (V-T)$ je startující symbol a $P$ je konečná množina \emph{pravidel} tvaru $q: A \rightarrow \alpha$, kde $A \in (V - T)$, $\alpha \in V^*$ a $q$ je návěští tohoto pravidla. Nechť $N = V - T$ značí abecedu neterminálů.
 	Pokud $q: A \rightarrow \alpha \in P$, $\gamma,\delta \in V^*$, $G$ provádí derivační krok z $\gamma A \delta$ do $\gamma \alpha \delta$ podle pravidla $q: A \rightarrow \alpha$, symbolicky píšeme $\gamma A \delta \Rightarrow \gamma \alpha \delta [q: A \rightarrow \alpha]$ nebo zjednodušeně $\gamma A \delta \Rightarrow \gamma \alpha \delta$. Standardním způsobem definujeme $\Rightarrow^m$, kde $m \geq 0$. Dále definujeme tranzitivní uzávěr $\Rightarrow^+$ a tranzitivně-reflexivní uzávěr $\Rightarrow^*$.
@@ -110,9 +110,9 @@
 
 	$$\sqrt[x^2]{y^3_0} \quad \mathbb{N} = \{0,1,2,\ldots\} \quad x^{y^y} \neq x^{yy} \quad z_{i_j} \not\equiv z_{ij}$$
 
-	V rovnici (...) jsou využity tři typy závorek s různou explicitně definovanou velikostí.
+	V rovnici \eqref{rovnice1} jsou využity tři typy závorek s různou explicitně definovanou velikostí.
 
-	\begin{eqnarray}
+	\begin{eqnarray} \label{rovnice1}
 		\left\{ {\Big[ (a+b)*c \Big]}^d + 1 \right\} & = & x \\
 		\lim_{x \to \infty} \frac{\sin^2 x + \cos^2 x}{4} & = & y \nonumber
 	\end{eqnarray}
