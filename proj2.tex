@@ -7,6 +7,7 @@
 \usepackage{times}
 \usepackage{amsthm}
 \usepackage{amssymb}
+\usepackage{amsmath}
 \usepackage{dsfont}
 
 \theoremstyle{definition}
@@ -15,6 +16,18 @@
 \theoremstyle{plain}
 \newtheorem{algoritmus}{Algoritmus}[section]
 \newtheorem{veta}{Věta}
+
+\usepackage{scalerel,stackengine}
+\stackMath
+\newcommand\reallywidehat[1]{%
+	\savestack{\tmpbox}{\stretchto{%
+			\scaleto{%
+				\scalerel*[\widthof{\ensuremath{#1}}]{\kern-.6pt\bigwedge\kern-.6pt}%
+				{\rule[-\textheight/2]{1ex}{\textheight}}%WIDTH-LIMITED BIG WEDGE
+			}{\textheight}% 
+		}{0.5ex}}%
+	\stackon[1pt]{#1}{\tmpbox}%
+}
 
 \begin{document}
 	\begin{titlepage}
@@ -100,11 +113,56 @@
 	V rovnici (...) jsou využity tři typy závorek s různou explicitně definovanou velikostí.
 
 	\begin{eqnarray}
-		\left\{ {\left[ (a+b)*c \right]}^d + 1 \right\} = x
+		\left\{ {\Big[ (a+b)*c \Big]}^d + 1 \right\} & = & x \\
+		\lim_{x \to \infty} \frac{\sin^2 x + \cos^2 x}{4} & = & y \nonumber
 	\end{eqnarray}
 
-	V této větě vidíme, jak vypadá implicitní vysázení limity ... v normálním odstavci textu. Podobně je to i s dalšími symboly jako ... či ... . V případě vzorce ... jsme si vynutili méně úspornou sazbu příkazem \verb|\limits|.
+	V této větě vidíme, jak vypadá implicitní vysázení limity $\lim_{n \to \infty} f(x)$ v normálním odstavci textu. Podobně je to i s dalšími symboly jako $\sum_{1}^{n}$ či $\bigcup_{A \in \mathcal{B}}$. V případě vzorce $\lim\limits_{x \to 0} \frac{\sin x}{x} = 1$ jsme si vynutili méně úspornou sazbu příkazem \verb|\limits|.
 
-	...
+	\begin{eqnarray}
+		\int\limits_{a}^{b} f(x)\,\mathrm{d}x & = & - \int_{a}^{b} f(x)\,\mathrm{d}x \\
+		\Big(\sqrt[5]{x^4}\Big)' = \Big(x^{\frac{4}{5}}\Big)' & = & \frac{4}{5}x^{-\frac{1}{5}} = \frac{4}{5 \sqrt[5]{x}} \\
+		\overline{\overline{A \vee B}} & = & \overline{\overline{A} \wedge \overline{B}}
+	\end{eqnarray}
 	% section rovnice_a_odkazy (end)
+	
+	\section{Matice}
+	Pro sázení matic se velmi často používá prostředí \texttt{array} a závorky (\verb|\left|, \verb|\right|). 
+	$$\left(\begin{array}{cc}
+		 a + b & b - a \\
+		 \reallywidehat{\xi + \omega} & \hat{\pi} \\
+		 \overrightarrow{a} & \overleftrightarrow{AC} \\
+		 0 & \beta
+	\end{array}	\right) $$
+	$$
+	A = \left|\left|
+	\begin{array}{cccc}
+	a_{11} & a_{12} & \cdots & a_{1n} \\
+	a_{21} & a_{22} & \cdots & a_{2n} \\
+	\vdots & \vdots & \ddots & \vdots \\
+	a_{m1} & a_{m2} & \cdots & a_{mn}
+	\end{array}
+	\right|\right|
+	$$
+	$$
+	\left|
+	\begin{array}{cc}
+	t & u \\
+	v & w
+	\end{array}
+	\right|
+	= tw - uv
+	$$
+	Prostředí \texttt{array} lze úspěšně využít i jinde.
+	
+	$$
+	\binom{n}{k} = \left\{
+	\begin{array}{ll}
+	\frac{n!}{k!(n-k)!} & \text{pro } 0 \leq k \leq n \\
+	0 & \text{pro } k < 0 \text{ nebo } k > n
+	\end{array}
+	\right.
+	$$
+	
+	% section matice (end)
 \end{document}
