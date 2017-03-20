@@ -1,4 +1,4 @@
-FILE = proj2
+FILE = proj3
 BIN = /usr/local/share/texlive/bin
 PS2PDFBIN = /usr/bin
 

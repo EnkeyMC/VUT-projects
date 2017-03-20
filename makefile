@@ -1,8 +1,8 @@
 HOST=merlin.fit.vutbr.cz
 USER=xomach00
-FILENAME=proj2
+FILENAME=proj3
 HOST_MAKE=makefile-merlin
-DIRECTORY=ITY_project_2
+DIRECTORY=ITY_project_3
 SSH_COMMAND="cd $(DIRECTORY) && make"
 SSH_COMMAND_CLEAN="cd $(DIRECTORY) && make clean"
 
