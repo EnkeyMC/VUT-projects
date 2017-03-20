@@ -1,16 +1,29 @@
-FILE = proj2
+HOST=merlin.fit.vutbr.cz
+USER=xomach00
+FILENAME=proj2
+HOST_MAKE=makefile-merlin
+DIRECTORY=ITY_project_2
+SSH_COMMAND="cd $(DIRECTORY) && make"
+SSH_COMMAND_CLEAN="cd $(DIRECTORY) && make clean"
 
-all: $(FILE).ps
-	ps2pdf $<
+convert: copy-tex copy-makefile 
+	ssh $(USER)@$(HOST) $(SSH_COMMAND)
+	scp $(USER)@$(HOST):~/$(DIRECTORY)/$(FILENAME).pdf ./$(FILENAME).pdf
 
-$(FILE).ps: $(FILE).dvi
-	dvips -t a4 $<
+copy-tex: $(FILENAME).tex
+	scp $< $(USER)@$(HOST):~/$(DIRECTORY)/
 
-$(FILE).dvi: $(FILE).tex
-	latex $<
+copy-makefile: $(HOST_MAKE)
+	scp $< $(USER)@$(HOST):~/$(DIRECTORY)/makefile
 
-clear-all:
-	rm $(FILE).dvi
-	rm $(FILE).ps
-	rm $(FILE).pdf
-	rm $(FILE).log
+clean-merlin:
+	ssh $(USER)@$(HOST) $(SSH_COMMAND_CLEAN)
+
+clean:
+	rm $(FILENAME).dvi
+	rm $(FILENAME).ps
+	rm $(FILENAME).pdf
+	rm $(FILENAME).log
+
+create-directory:
+	ssh $(USER)@$(HOST) "mkdir $(DIRECTORY)"
