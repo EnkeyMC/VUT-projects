@@ -1,0 +1,20 @@
+FILE = proj2
+BIN = /usr/local/share/texlive/bin
+PS2PDFBIN = /usr/bin
+
+all: $(FILE).ps
+	$(PS2PDFBIN)/ps2pdf $<
+
+$(FILE).ps: $(FILE).dvi
+	$(BIN)/dvips -t a4 $<
+
+$(FILE).dvi: $(FILE).tex
+	$(BIN)/latex $<
+	$(BIN)/latex $<
+
+clean:
+	rm $(FILE).dvi
+	rm $(FILE).ps
+	rm $(FILE).pdf
+	rm $(FILE).log
+	rm $(FILE).aux

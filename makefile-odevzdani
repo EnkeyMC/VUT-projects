@@ -1,0 +1,18 @@
+FILE = proj2
+
+all: $(FILE).ps
+	ps2pdf $<
+
+$(FILE).ps: $(FILE).dvi
+	dvips -t a4 $<
+
+$(FILE).dvi: $(FILE).tex
+	latex $<
+	latex $<
+
+clean:
+	rm $(FILE).dvi
+	rm $(FILE).ps
+	rm $(FILE).pdf
+	rm $(FILE).log
+	rm $(FILE).aux
