@@ -1,0 +1,10 @@
+#!/bin/bash
+
+POSIXLY_CORRECT=yes
+
+DIR=$1
+
+if [ ! -d $DIR ]; then
+	echo "$DIR is not a directory!"
+	exit 1
+fi
