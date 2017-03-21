@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 POSIXLY_CORRECT=yes
 
@@ -8,3 +8,13 @@ if [ ! -d $DIR ]; then
 	echo "$DIR is not a directory!"
 	exit 1
 fi
+
+echo "Root directory: $DIR"
+
+dir_count=`find $DIR -mindepth 1 -type d 2> /dev/null | wc -l`
+
+echo "Directories: $dir_count"
+
+file_count=`find $DIR -type f 2> /dev/null | wc -l`
+
+echo "All files: $file_count"
