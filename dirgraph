@@ -11,45 +11,54 @@ fi
 
 echo "Root directory: $DIR"
 
-dir_count=`find $DIR -type d 2> /dev/null | wc -l`
+dir_count=`find $DIR -type d | wc -l | sed -e 's/^ *//g;s/ *$//g'`
 
 echo "Directories: $dir_count"
 
-file_count=`find $DIR -type f 2> /dev/null | wc -l`
+file_count=`find $DIR -type f | wc -l | sed -e 's/^ *//g;s/ *$//g'`
 
 echo "All files: $file_count"
-
 
 # FSHIST
 echo "File size histogram:"
 
 # Find all files in $DIR and get their size
-files_w_sizes=`find $DIR -type f -exec du -ba {} + 2> /dev/null`
+file_sizes=`find $DIR -type f -exec wc -c {} + | sed '$ d'`
 
 # < 100B
-fshist="<100 B  :,"`echo "$files_w_sizes" | awk '$1<100' | wc -l`
+fshist="<100 B  :,"`echo "$file_sizes" | awk '$1<100' | wc -l`
 # < 1 KiB
-fshist="$fshist\n<1 KiB  :,"`echo "$files_w_sizes" | awk '$1<1024 && $1>=100' | wc -l`
+fshist="$fshist"$(printf '\n<1 KiB  :,')`echo "$file_sizes" | awk '$1<1024 && $1>=100' | wc -l`
 # < 10 KiB
-fshist="$fshist\n<10 KiB :,"`echo "$files_w_sizes" | awk '$1<10240 && $1>=1024' | wc -l`
+fshist="$fshist"$(printf '\n<10 KiB :,')`echo "$file_sizes" | awk '$1<10240 && $1>=1024' | wc -l`
 # < 100 KiB
-fshist="$fshist\n<100 KiB:,"`echo "$files_w_sizes" | awk '$1<102400 && $1>=10240' | wc -l`
+fshist="$fshist"$(printf '\n<100 KiB:,')`echo "$file_sizes" | awk '$1<102400 && $1>=10240' | wc -l`
 # < 1 MiB
-fshist="$fshist\n<1 MiB  :,"`echo "$files_w_sizes" | awk '$1<1048576 && $1>=102400' | wc -l`
+fshist="$fshist"$(printf '\n<1 MiB  :,')`echo "$file_sizes" | awk '$1<1048576 && $1>=102400' | wc -l`
 # < 10 MiB
-fshist="$fshist\n<10 MiB :,"`echo "$files_w_sizes" | awk '$1<10485760 && $1>=1048576' | wc -l`
+fshist="$fshist"$(printf '\n<10 MiB :,')`echo "$file_sizes" | awk '$1<10485760 && $1>=1048576' | wc -l`
 # < 100 MiB
-fshist="$fshist\n<100 MiB:,"`echo "$files_w_sizes" | awk '$1<104857600 && $1>=10485760' | wc -l`
+fshist="$fshist"$(printf '\n<100 MiB:,')`echo "$file_sizes" | awk '$1<104857600 && $1>=10485760' | wc -l`
 # < 1 GiB
-fshist="$fshist\n<1 GiB  :,"`echo "$files_w_sizes" | awk '$1<1073741824 && $1>=104857600' | wc -l`
+fshist="$fshist"$(printf '\n<1 GiB  :,')`echo "$file_sizes" | awk '$1<1073741824 && $1>=104857600' | wc -l`
 # >= 1 GiB
-fshist="$fshist\n>= GiB  :,"`echo "$files_w_sizes" | awk '$1>=1073741824' | wc -l`
+fshist="$fshist"$(printf '\n>= GiB  :,')`echo "$file_sizes" | awk '$1>=1073741824' | wc -l`
 
 SAVEIFS=$IFS
 echo "$fshist" | while IFS= read -r line ; do
-	echo "$line" | awk -F "," '{printf "  " $1 " "}'
 	count=`echo "$line" | awk -F "," '{printf $2}'`
-	echo "$line" | awk -v count=$count -F "," 'BEGIN {while (i++ < count) printf "#"}'
-	echo ""
+	echo "$line" | awk -v count=$count -F "," '{printf "  " $1 " "; while (i++ < count) printf "#"; printf "\n"}'
+done
+IFS=$SAVEIFS
+
+# FTHIST
+echo "File type histogram:"
+fthist=`find $DIR -type f -exec file {} + | awk -F ":[ ]+"  '{if (length($NF) > 40) print substr($NF, 1, 40) "..."; else print $NF}' | sort | uniq -c | sort -nr | head -n 10`
+
+SAVEIFS=$IFS
+echo "$fthist" | while IFS= read -r line ; do
+	echo "$line" | awk '{$1=""; print " " $0}' | awk '{printf "%-45s: ", $0}'
+	count=`echo "$line" | awk '{print $1}'`
+	echo "$line" | awk -v count=$count 'BEGIN {while (i++ < count) printf "#"; printf "\n"}'
 done
 IFS=$SAVEIFS
