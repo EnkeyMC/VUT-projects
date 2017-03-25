@@ -2,11 +2,34 @@
 POSIXLY_CORRECT=yes
 IFS="$(printf '\n\t')"
 
-DIR="$1"
+ignore=""
+normalize=false
 
-if [ ! -d $DIR ]; then
-	echo "$DIR is not a directory!"
-	exit 1
+while getopts "i:n" flag; do
+	case $flag in
+		i )
+			ignore="$OPTARG"
+			;;
+		n )
+			normalize=true
+			;;
+		* )
+			exit 1
+			;;
+	esac
+done
+
+shift $(($OPTIND - 1))
+
+DIR="."
+
+if [ $1 ]; then
+	if [ -d $1 ]; then
+		DIR="$1"
+	else
+		echo "$1 is not a directory!" >&2
+		exit 1
+	fi
 fi
 
 echo "Root directory: $DIR"
@@ -23,7 +46,7 @@ echo "All files: $file_count"
 echo "File size histogram:"
 
 # Find all files in $DIR and get their size
-file_sizes=`find $DIR -type f -exec wc -c {} + | sed '$ d'`
+file_sizes=`find $DIR -type f -exec wc -c {} + 2> /dev/null | sed '$ d'`
 
 # < 100B
 fshist="<100 B  :,"`echo "$file_sizes" | awk '$1<100' | wc -l`
@@ -53,7 +76,7 @@ IFS=$SAVEIFS
 
 # FTHIST
 echo "File type histogram:"
-fthist=`find $DIR -type f -exec file {} + | awk -F ":[ ]+"  '{if (length($NF) > 40) print substr($NF, 1, 40) "..."; else print $NF}' | sort | uniq -c | sort -nr | head -n 10`
+fthist=`find $DIR -type f -exec file {} + 2> /dev/null | awk -F ":[ ]+"  '{if (length($NF) > 40) print substr($NF, 1, 40) "..."; else print $NF}' | sort | uniq -c | sort -nr | head -n 10`
 
 SAVEIFS=$IFS
 echo "$fthist" | while IFS= read -r line ; do
