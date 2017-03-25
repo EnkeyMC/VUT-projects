@@ -2,7 +2,8 @@
 POSIXLY_CORRECT=yes
 IFS="$(printf '\n\t')"
 
-ignore=""
+ignore="^$"
+ignore_set=false
 normalize=false
 FSHIST_PREFIX_LEN=12
 FTHIST_PREFIX_LEN=47
@@ -15,7 +16,13 @@ fi
 while getopts "i:n" flag; do
 	case $flag in
 		i )
-			ignore="$OPTARG"
+			if $ignore_set; then
+				echo "Option -i was already specified" >&2
+				exit 1
+			else
+				ignore="$OPTARG"
+				ignore_set=true
+			fi
 			;;
 		n )
 			normalize=true
@@ -39,24 +46,42 @@ if [ $1 ]; then
 	fi
 fi
 
+# Edit regex given by -i option
+ignore_replaced="$ignore"
+if $ignore_set; then
+	ignore_replaced=`printf "$ignore" | sed 's/^\^/\//g;s/\\$$/(\/|\$)/g'`
+fi
+echo "$ignore"
+
 echo "Root directory: $DIR"
 
-dir_count=`find $DIR -type d | wc -l | sed -e 's/^ *//g;s/ *$//g'`
+dir_count=`find $DIR -type d | grep -Ev "$ignore_replaced" | wc -l | sed -e 's/^ *//g;s/ *$//g'`
 
 echo "Directories: $dir_count"
 
-file_count=`find $DIR -type f | wc -l | sed -e 's/^ *//g;s/ *$//g'`
+file_count=`find $DIR -type f | grep -Ev "$ignore_replaced" | wc -l | sed -e 's/^ *//g;s/ *$//g'`
 
 echo "All files: $file_count"
 
 # FSHIST
 echo "File size histogram:"
 
+fsignore="$ignore"
+
+if $ignore_set; then
+	fsignore="^[ ]+[0-9]+ .*$ignore_replaced"
+fi
+
 # Find all files in $DIR and get their size
-file_sizes=`find $DIR -type f -exec wc -c {} + 2> /dev/null | sed '$ d'`
+file_sizes=`find $DIR -type f -exec wc -c {} + 2> /dev/null | sed '$ d' | grep -Ev "$fsignore"`
 
 # < 100B
-fshist="<100 B  :,"`echo "$file_sizes" | awk '$1<100' | wc -l`
+if [ $file_count -gt 0 ]; then
+	# if there are 0 files this command still returns 1, which is wrong
+	fshist="<100 B  :,"`echo "$file_sizes" | awk '$1<100' | wc -l`
+else
+	fshist="<100 B  :,0"
+fi
 # < 1 KiB
 fshist="$fshist"$(printf '\n<1 KiB  :,')`echo "$file_sizes" | awk '$1<1024 && $1>=100' | wc -l`
 # < 10 KiB
@@ -82,29 +107,38 @@ if $normalize; then
 	fi
 fi
 
-SAVEIFS=$IFS
-echo "$fshist" | while IFS= read -r line ; do
-	count=`echo "$line" | awk -F "," '{printf $2}'`
-	echo "$line" | awk -v count=$count -F "," '{printf "  " $1 " "; while (i++ < count) printf "#"; printf "\n"}'
-done
-IFS=$SAVEIFS
+# Print file size histogram
+echo "$fshist" | awk -F "," '{printf "  " $1 " "; count = $2; while (i++ < count) printf "#"; printf "\n"}'
 
 # FTHIST
 echo "File type histogram:"
-fthist=`find $DIR -type f -exec file {} + 2> /dev/null | awk -F ":[ ]+"  '{if (length($NF) > 40) print substr($NF, 1, 40) "..."; else print $NF}' | sort | uniq -c | sort -nr | head -n 10`
 
-if $normalize; then
-	usable_len=$(($LINE_LEN - $FTHIST_PREFIX_LEN))
-	max_len=`echo "$fthist" | head -n 1 | awk '{print $1}'`
-	if [ $max_len -gt $usable_len ]; then
-		fthist=`echo "$fthist" | awk -v max_len=$max_len -v usable_len=$usable_len '{divisor = max_len / usable_len; printf "%d ", $1 / divisor; $1=""; printf "%s\n", $0}'`
+if [ $file_count -gt 0 ]; then
+	ftignore="$ignore"
+	if $ignore_set; then
+		ftignore=`printf "$ignore" | sed 's/^\^/\//'`
+		has_dolar=`printf "$ftignore" | grep -E "\\$"`
+
+		if [ $has_dolar ]; then
+			ftignore=`printf "$ftignore" | sed `
+		fi
 	fi
-fi
 
-SAVEIFS=$IFS
-echo "$fthist" | while IFS= read -r line ; do
-	echo "$line" | awk '{$1=""; print " " $0}' | awk '{printf "%-45s: ", $0}'
-	count=`echo "$line" | awk '{print $1}'`
-	echo "" | awk -v count=$count 'BEGIN {while (i++ < count) printf "#"; printf "\n"}'
-done
-IFS=$SAVEIFS
+	fthist=`find $DIR -type f -exec file {} + 2> /dev/null | awk -F ":[ ]+"  '{if (length($NF) > 40) print substr($NF, 1, 40) "..."; else print $NF}' | sort | uniq -c | sort -nr | head -n 10`
+	echo "`find $DIR -type f -exec file {} +`"
+	if $normalize; then
+		usable_len=$(($LINE_LEN - $FTHIST_PREFIX_LEN))
+		max_len=`echo "$fthist" | head -n 1 | awk '{print $1}'`
+		if [ $max_len -gt $usable_len ]; then
+			fthist=`echo "$fthist" | awk -v max_len=$max_len -v usable_len=$usable_len '{divisor = max_len / usable_len; printf "%d ", $1 / divisor; $1=""; printf "%s\n", $0}'`
+		fi
+	fi
+
+	# Print file type histogram
+	SAVEIFS=$IFS
+	echo "$fthist" | while IFS= read -r line ; do
+		echo "$line" | awk '{$1=""; print " " $0}' | awk '{printf "%-45s: ", $0}'
+		echo "$line" | awk '{count = $1; while (i++ < count) printf "#"; printf "\n"}'
+	done
+	IFS=$SAVEIFS
+fi
