@@ -4,6 +4,13 @@ IFS="$(printf '\n\t')"
 
 ignore=""
 normalize=false
+FSHIST_PREFIX_LEN=12
+FTHIST_PREFIX_LEN=47
+LINE_LEN=79
+
+if [ -t 1 ]; then
+	LINE_LEN=$((`tput cols` - 1))
+fi
 
 while getopts "i:n" flag; do
 	case $flag in
@@ -67,6 +74,14 @@ fshist="$fshist"$(printf '\n<1 GiB  :,')`echo "$file_sizes" | awk '$1<1073741824
 # >= 1 GiB
 fshist="$fshist"$(printf '\n>= GiB  :,')`echo "$file_sizes" | awk '$1>=1073741824' | wc -l`
 
+if $normalize; then
+	usable_len=$(($LINE_LEN - $FSHIST_PREFIX_LEN))
+	max_len=`echo "$fshist" | awk -F "," '{print $2}' | sort -nr | head -n 1`
+	if [ $max_len -gt $usable_len ]; then
+		fshist=`echo "$fshist" | awk -v max_len=$max_len -v usable_len=$usable_len -F "," '{divisor = max_len / usable_len; printf "%s,%d\n", $1, $2 / divisor}'`
+	fi
+fi
+
 SAVEIFS=$IFS
 echo "$fshist" | while IFS= read -r line ; do
 	count=`echo "$line" | awk -F "," '{printf $2}'`
@@ -78,10 +93,18 @@ IFS=$SAVEIFS
 echo "File type histogram:"
 fthist=`find $DIR -type f -exec file {} + 2> /dev/null | awk -F ":[ ]+"  '{if (length($NF) > 40) print substr($NF, 1, 40) "..."; else print $NF}' | sort | uniq -c | sort -nr | head -n 10`
 
+if $normalize; then
+	usable_len=$(($LINE_LEN - $FTHIST_PREFIX_LEN))
+	max_len=`echo "$fthist" | head -n 1 | awk '{print $1}'`
+	if [ $max_len -gt $usable_len ]; then
+		fthist=`echo "$fthist" | awk -v max_len=$max_len -v usable_len=$usable_len '{divisor = max_len / usable_len; printf "%d ", $1 / divisor; $1=""; printf "%s\n", $0}'`
+	fi
+fi
+
 SAVEIFS=$IFS
 echo "$fthist" | while IFS= read -r line ; do
 	echo "$line" | awk '{$1=""; print " " $0}' | awk '{printf "%-45s: ", $0}'
 	count=`echo "$line" | awk '{print $1}'`
-	echo "$line" | awk -v count=$count 'BEGIN {while (i++ < count) printf "#"; printf "\n"}'
+	echo "" | awk -v count=$count 'BEGIN {while (i++ < count) printf "#"; printf "\n"}'
 done
 IFS=$SAVEIFS
