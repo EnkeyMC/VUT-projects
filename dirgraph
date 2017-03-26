@@ -139,7 +139,7 @@ echo "File type histogram:"
 
 if [ $file_count -gt 0 ]; then
 	fthist=`find $DIR -type f -exec file {} + 2> /dev/null | awk -F ":[ ]+"  '{if (length($NF) > 40) print substr($NF, 1, 40) "..."; else print $NF}' | sort | uniq -c | sort -nr | head -n 10`
-	#echo "`find $DIR -type f -exec file {} +`"
+	echo "`find $DIR -type f -exec file {} +`"
 	if $normalize; then
 		usable_len=$(($LINE_LEN - $FTHIST_PREFIX_LEN))
 		max_len=`echo "$fthist" | head -n 1 | awk '{print $1}'`
@@ -151,7 +151,7 @@ if [ $file_count -gt 0 ]; then
 	# Print file type histogram
 	SAVEIFS=$IFS
 	echo "$fthist" | while IFS= read -r line ; do
-		echo "$line" | awk '{$1=""; print " " $0}' | awk '{printf "%-45s: ", $0}'
+		echo "$line" | sed -e 's/^ *//g' | cut -f1 -d' ' --complement | awk '{printf "%-45s: ", $0}'
 		echo "$line" | awk '{count = $1; i = 0; while (i++ < count) printf "#"; printf "\n"}'
 	done
 	IFS=$SAVEIFS
