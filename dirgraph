@@ -32,13 +32,8 @@ fi
 while getopts "i:n" flag; do
 	case $flag in
 		i )
-			if $ignore_set; then
-				echo "Option -i was already specified" >&2
-				exit 1
-			else
-				ignore="$OPTARG"
-				ignore_set=true
-			fi
+			ignore="$OPTARG"
+			ignore_set=true
 			;;
 		n )
 			normalize=true
@@ -62,21 +57,35 @@ if [ $1 ]; then
 	fi
 fi
 
+if [ $2 ]; then
+	echo "Error: Unexpected parameter '$2'" >&2
+	exit 1
+fi
+
+if $ignore_set; then
+	if [ `printf "$DIR" | awk -F "/" '{while (i++ < NF) print $i}' | grep -E "$ignore" | wc -l` -gt 0 ]; then
+		echo "Error: regular expression given by -i cannot match given path ($DIR)" >&2
+		exit 1
+	fi
+fi
 
 echo "Root directory: $DIR"
 
-dir_count=`find $DIR -type d 2> /dev/null | wc -l | sed -e 's/^ *//g;s/ *$//g'`
 
 if $ignore_set; then
-	dir_count=$(($dir_count - `find . -type d 2> /dev/null | while read line; do printf "$line" | awk -F "/" '{while (i++ < NF) print $i}' | grep -E "$ignore" | tr -d '\n'; echo ""; done | sed '/^$/d' | wc -l`))
+	dir_count=$(find $DIR -type d 2> /dev/null | while read line; do if [ `printf "$line" | awk -F "/" '{while (i++ < NF) print $i}' | grep -E "$ignore" | wc -l` -eq 0 ]; then echo "$line"; fi ; done | wc -l | sed -e 's/^ *//g;s/ *$//g')
+else
+	dir_count=`find $DIR -type d 2> /dev/null | wc -l | sed -e 's/^ *//g;s/ *$//g'`
 fi
+	
 
 echo "Directories: $dir_count"
 
-file_count=`find $DIR -type f 2> /dev/null| wc -l | sed -e 's/^ *//g;s/ *$//g'`
 
 if $ignore_set; then
-	file_count=$(($file_count - `find . -type f 2> /dev/null | while read line; do printf "$line" | awk -F "/" '{while (i++ < NF) print $i}' | grep -E "$ignore" | tr -d '\n'; echo ""; done | sed '/^$/d' | wc -l`))
+	file_count=$(find $DIR -type f 2> /dev/null | while read line; do if [ `printf "$line" | awk -F "/" '{while (i++ < NF) print $i}' | grep -E "$ignore" | wc -l` -eq 0 ]; then echo "$line"; fi ; done | wc -l | sed -e 's/^ *//g;s/ *$//g')
+else
+	file_count=`find $DIR -type f 2> /dev/null | wc -l | sed -e 's/^ *//g;s/ *$//g'`
 fi
 
 echo "All files: $file_count"
@@ -85,57 +94,66 @@ echo "All files: $file_count"
 echo "File size histogram:"
 # This is ugly, but at least it works
 # < 100B
-ctg_file_count=`find $DIR -type f -size -100c 2> /dev/null | wc -l`
 if $ignore_set; then
-	ctg_file_count=$(($ctg_file_count - `find $DIR -type f -size -100c 2> /dev/null | while read line; do printf "$line" | awk -F "/" '{while (i++ < NF) print $i}' | grep -E "$ignore" | tr -d '\n'; echo ""; done | sed '/^$/d' | wc -l`))
+	ctg_file_count=$(find $DIR -type f -size -100c 2> /dev/null | while read line; do if [ `printf "$line" | awk -F "/" '{while (i++ < NF) print $i}' | grep -E "$ignore" | wc -l` -eq 0 ]; then echo "$line"; fi ; done | wc -l)
+else
+	ctg_file_count=`find $DIR -type f -size -100c 2> /dev/null | wc -l`
 fi
 fshist="<100 B  :,$ctg_file_count"
 # < 1 KiB
-ctg_file_count=`find $DIR -type f -size +99c -size -1024c 2> /dev/null | wc -l`
 if $ignore_set; then
-	ctg_file_count=$(($ctg_file_count - `find $DIR -type f -size +99c -size -1024c 2> /dev/null | while read line; do printf "$line" | awk -F "/" '{while (i++ < NF) print $i}' | grep -E "$ignore" | tr -d '\n'; echo ""; done | sed '/^$/d' | wc -l`))
+	ctg_file_count=$(find $DIR -type f -size +99c -size -1024c 2> /dev/null | while read line; do if [ `printf "$line" | awk -F "/" '{while (i++ < NF) print $i}' | grep -E "$ignore" | wc -l` -eq 0 ]; then echo "$line"; fi ; done | wc -l)
+else
+	ctg_file_count=`find $DIR -type f -size +99c -size -1024c 2> /dev/null | wc -l`
 fi
 fshist="$fshist"$(printf '\n<1 KiB  :,')"$ctg_file_count"
 # < 10 KiB
-ctg_file_count=`find $DIR -type f -size +1023c -size -10240c 2> /dev/null | wc -l`
 if $ignore_set; then
-	ctg_file_count=$(($ctg_file_count - `find $DIR -type f -size +1023c -size -10240c 2> /dev/null | while read line; do printf "$line" | awk -F "/" '{while (i++ < NF) print $i}' | grep -E "$ignore" | tr -d '\n'; echo ""; done | sed '/^$/d' | wc -l`))
+	ctg_file_count=$(find $DIR -type f -size +1023c -size -10240c 2> /dev/null | while read line; do if [ `printf "$line" | awk -F "/" '{while (i++ < NF) print $i}' | grep -E "$ignore" | wc -l` -eq 0 ]; then echo "$line"; fi ; done | wc -l)
+else
+	ctg_file_count=`find $DIR -type f -size +1023c -size -10240c 2> /dev/null | wc -l`
 fi
 fshist="$fshist"$(printf '\n<10 KiB :,')"$ctg_file_count"
 # < 100 KiB
-ctg_file_count=`find $DIR -type f -size +10239c -size -102400c 2> /dev/null | wc -l`
 if $ignore_set; then
-	ctg_file_count=$(($ctg_file_count - `find $DIR -type f -size +10239c -size -102400c 2> /dev/null | while read line; do printf "$line" | awk -F "/" '{while (i++ < NF) print $i}' | grep -E "$ignore" | tr -d '\n'; echo ""; done | sed '/^$/d' | wc -l`))
+	ctg_file_count=$(find $DIR -type f -size +10239c -size -102400c 2> /dev/null | while read line; do if [ `printf "$line" | awk -F "/" '{while (i++ < NF) print $i}' | grep -E "$ignore" | wc -l` -eq 0 ]; then echo "$line"; fi ; done | wc -l)
+else
+	ctg_file_count=`find $DIR -type f -size +10239c -size -102400c 2> /dev/null | wc -l`
 fi
 fshist="$fshist"$(printf '\n<100 KiB:,')"$ctg_file_count"
 # < 1 MiB
-ctg_file_count=`find $DIR -type f -size +102399c -size -1048576c 2> /dev/null | wc -l`
 if $ignore_set; then
-	ctg_file_count=$(($ctg_file_count - `find $DIR -type f -size +102399c -size -1048576c 2> /dev/null | while read line; do printf "$line" | awk -F "/" '{while (i++ < NF) print $i}' | grep -E "$ignore" | tr -d '\n'; echo ""; done | sed '/^$/d' | wc -l`))
+	ctg_file_count=$(find $DIR -type f -size +102399c -size -1048576c 2> /dev/null | while read line; do if [ `printf "$line" | awk -F "/" '{while (i++ < NF) print $i}' | grep -E "$ignore" | wc -l` -eq 0 ]; then echo "$line"; fi ; done | wc -l)
+else
+	ctg_file_count=`find $DIR -type f -size +102399c -size -1048576c 2> /dev/null | wc -l`
 fi
 fshist="$fshist"$(printf '\n<1 MiB  :,')"$ctg_file_count"
 # < 10 MiB
-ctg_file_count=`find $DIR -type f -size +1048575c -size -10485760c 2> /dev/null | wc -l`
 if $ignore_set; then
-	ctg_file_count=$(($ctg_file_count - `find $DIR -type f -size +1048575c -size -10485760c 2> /dev/null | while read line; do printf "$line" | awk -F "/" '{while (i++ < NF) print $i}' | grep -E "$ignore" | tr -d '\n'; echo ""; done | sed '/^$/d' | wc -l`))
+	ctg_file_count=$(find $DIR -type f -size +1048575c -size -10485760c 2> /dev/null | while read line; do if [ `printf "$line" | awk -F "/" '{while (i++ < NF) print $i}' | grep -E "$ignore" | wc -l` -eq 0 ]; then echo "$line"; fi ; done | wc -l)
+else
+	ctg_file_count=`find $DIR -type f -size +1048575c -size -10485760c 2> /dev/null | wc -l`
 fi
 fshist="$fshist"$(printf '\n<10 MiB :,')"$ctg_file_count"
 # < 100 MiB
-ctg_file_count=`find $DIR -type f -size +10485759c -size -104857600c 2> /dev/null | wc -l`
 if $ignore_set; then
-	ctg_file_count=$(($ctg_file_count - `find $DIR -type f -size +10485759c -size -104857600c 2> /dev/null | while read line; do printf "$line" | awk -F "/" '{while (i++ < NF) print $i}' | grep -E "$ignore" | tr -d '\n'; echo ""; done | sed '/^$/d' | wc -l`))
+	ctg_file_count=$(find $DIR -type f -size +10485759c -size -104857600c 2> /dev/null | while read line; do if [ `printf "$line" | awk -F "/" '{while (i++ < NF) print $i}' | grep -E "$ignore" | wc -l` -eq 0 ]; then echo "$line"; fi ; done | wc -l)
+else
+	ctg_file_count=`find $DIR -type f -size +10485759c -size -104857600c 2> /dev/null | wc -l`
 fi
 fshist="$fshist"$(printf '\n<100 MiB:,')"$ctg_file_count"
 # < 1 GiB
-ctg_file_count=`find $DIR -type f -size +104857599c -size -1073741824c 2> /dev/null | wc -l`
 if $ignore_set; then
-	ctg_file_count=$(($ctg_file_count - `find $DIR -type f -size +104857599c -size -1073741824c 2> /dev/null | while read line; do printf "$line" | awk -F "/" '{while (i++ < NF) print $i}' | grep -E "$ignore" | tr -d '\n'; echo ""; done | sed '/^$/d' | wc -l`))
+	ctg_file_count=$(find $DIR -type f -size +104857599c -size -1073741824c 2> /dev/null | while read line; do if [ `printf "$line" | awk -F "/" '{while (i++ < NF) print $i}' | grep -E "$ignore" | wc -l` -eq 0 ]; then echo "$line"; fi ; done | wc -l)
+else
+	ctg_file_count=`find $DIR -type f -size +104857599c -size -1073741824c 2> /dev/null | wc -l`
 fi
 fshist="$fshist"$(printf '\n<1 GiB  :,')"$ctg_file_count"
 # >= 1 GiB
-ctg_file_count=`find $DIR -type f -size +1073741823c 2> /dev/null | wc -l`
 if $ignore_set; then
-	ctg_file_count=$(($ctg_file_count - `find $DIR -type f -size +1073741823c 2> /dev/null | while read line; do printf "$line" | awk -F "/" '{while (i++ < NF) print $i}' | grep -E "$ignore" | tr -d '\n'; echo ""; done | sed '/^$/d' | wc -l`))
+	ctg_file_count=$(find $DIR -type f -size +1073741823c 2> /dev/null | while read line; do if [ `printf "$line" | awk -F "/" '{while (i++ < NF) print $i}' | grep -E "$ignore" | wc -l` -eq 0 ]; then echo "$line"; fi ; done | wc -l)
+else
+	ctg_file_count=`find $DIR -type f -size +1073741823c 2> /dev/null | wc -l`
 fi
 fshist="$fshist"$(printf '\n>=1 GiB :,')"$ctg_file_count"
 
@@ -155,8 +173,7 @@ echo "File type histogram:"
 
 if [ $file_count -gt 0 ]; then
 	fthist=$(find $DIR -type f -exec file {} + 2> /dev/null | while read line; do if [ `printf "$line" | sed -e 's/: *[^:]*$//g' | awk -F "/" '{while (i++ < NF) print $i}' | grep -E "$ignore" | wc -l` -eq 0 ]; then echo "$line"; fi ; done | awk -F ":[ ]+"  '{if (length($NF) > 40) print substr($NF, 1, 40) "..."; else print $NF}' | sort | uniq -c | sort -nr | head -n 10)
-	#fthist=`find $DIR -type f -exec file {} + 2> /dev/null | awk -F ":[ ]+"  '{if (length($NF) > 40) print substr($NF, 1, 40) "..."; else print $NF}' | sort | uniq -c | sort -nr | head -n 10`
-	#echo "`find $DIR -type f -exec file {} +`"
+
 	if $normalize; then
 		usable_len=$(($LINE_LEN - $FTHIST_PREFIX_LEN))
 		max_len=`echo "$fthist" | head -n 1 | awk '{print $1}'`
