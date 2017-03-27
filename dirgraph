@@ -172,8 +172,12 @@ echo "$fshist" | awk -F "," '{printf "  " $1 " "; count = $2; i = 0; while (i++ 
 echo "File type histogram:"
 
 if [ $file_count -gt 0 ]; then
-	fthist=$(find $DIR -type f -exec file {} + 2> /dev/null | while read line; do if [ `printf "$line" | sed -e 's/: *[^:]*$//g' | awk -F "/" '{while (i++ < NF) print $i}' | grep -E "$ignore" | wc -l` -eq 0 ]; then echo "$line"; fi ; done | awk -F ":[ ]+"  '{if (length($NF) > 40) print substr($NF, 1, 40) "..."; else print $NF}' | sort | uniq -c | sort -nr | head -n 10)
-
+	if $ignore_set; then
+		fthist=$(find $DIR -type f -exec file {} + 2> /dev/null | while read line; do if [ `printf "$line" | sed -e 's/: *[^:]*$//g' | awk -F "/" '{while (i++ < NF) print $i}' | grep -E "$ignore" | wc -l` -eq 0 ]; then echo "$line"; fi ; done | awk -F ":[ ]+"  '{if (length($NF) > 40) print substr($NF, 1, 40) "..."; else print $NF}' | sort | uniq -c | sort -nr | head -n 10)
+	else
+		fthist=$(find $DIR -type f -exec file {} + 2> /dev/null | awk -F ":[ ]+"  '{if (length($NF) > 40) print substr($NF, 1, 40) "..."; else print $NF}' | sort | uniq -c | sort -nr | head -n 10)
+	fi
+	
 	if $normalize; then
 		usable_len=$(($LINE_LEN - $FTHIST_PREFIX_LEN))
 		max_len=`echo "$fthist" | head -n 1 | awk '{print $1}'`
