@@ -1,5 +1,46 @@
-\documentclass[a4paper]{article}
+% !TeX spellcheck = de_DE
+\documentclass[11pt,a4paper]{article}
 
+\usepackage[left=2cm, text={17cm,24cm}, top=3cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[czech]{babel}
+\usepackage{times}
 \begin{document}
+	\begin{titlepage}
+		\begin{center}
+			\Huge
+			\textsc{Vysoké učení technické v Brně\\[-2mm]
+			\huge Fakulta informačních technologií}
+		
+			\vspace{\stretch{0.382}}
+			
+			\LARGE
+			Typografie a publikování\,-- 3. projekt\\[-0.5mm]
+			\Huge Tabulky a obrázky
+			\vspace{\stretch{0.618}}
+		\end{center}
+		{\Large 29. března 2017 \hfill Martin Omacht}
+	\end{titlepage}
 	
+	\section{Úvodní strana}
+	Název práce umístěte do zlatého řezu a nezapomeňte uvést dnešní datum a vaše jméno a příjmení.
+	
+	\section{Tabulky}
+	Pro sázení tabulek můžeme použít buď prostředí \texttt{tabbing} nebo prostředí \texttt{tabular}.
+
+	\subsection{Prostředí \texttt{tabbing}}
+	Při použití \texttt{tabbing} vypadá tabulka následovně:
+	
+	Toto prostředí se dá také použít pro sázení algoritmů, ovšem vhodnější je použít prostředí \texttt{algorithm} nebo \texttt{algorithm2e} (viz sekce \ref{algoritmy}).
+
+	\subsection{Prostředí \texttt{tabular}}
+	Další možností, jak vytvořit tabulku, je použít prostředí tabular. Tabulky pak 
+	budou vypadat takto\footnote{Kdyby byl problem s cline, zkuste se podívat třeba sem: http://www.abclinuxu.cz/tex/poradna/show/325037}:
+
+	\section{Algoritmy} \label{algoritmy}
+	Pokud budeme chtít vysázet algoritmus, můžeme použít prostředí \texttt{algorithm}\footnote{Pro nápovědu, jak zacházet s prostředím algorithm, můžeme zkusit tuhle stránku: http://ftp.cstug.cz/pub/tex/CTAN/macros/latex/contrib/algorithms/algorithms.pdf.} nebo \texttt{algorithm2e}\footnote{Pro algorithm2e zase tuhle: http://ftp.cstug.cz/pub/tex/CTAN/macros/latex/contrib/algorithm2e/algorithm2e.pdf.}. Příklad použití prostředí \texttt{algorithm2e} viz Algoritmus ....
+
+	\section{Obrázky}
+	Do našich článků můžeme samozřejmě vkládat obrázky. Pokud je obrázkem fotografie,
+	můžeme klidně použít bitmapový soubor. Pokud by to ale mělo být nějaké schéma nebo něco podobného, je dobrým zvykem takovýto obrázek vytvořit vektorově.
 \end{document}
