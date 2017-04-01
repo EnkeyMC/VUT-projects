@@ -5,6 +5,9 @@
 \usepackage[utf8]{inputenc}
 \usepackage[czech]{babel}
 \usepackage{times}
+\usepackage{multirow}
+\usepackage[ruled,czech,linesnumbered]{algorithm2e}
+\usepackage{graphics}
 \begin{document}
 	\begin{titlepage}
 		\begin{center}
@@ -43,21 +46,128 @@
 
 	\subsection{Prostředí \texttt{tabular}}
 	Další možností, jak vytvořit tabulku, je použít prostředí tabular. Tabulky pak 
-	budou vypadat takto\footnote{Kdyby byl problem s cline, zkuste se podívat třeba sem: http://www.abclinuxu.cz/tex/poradna/show/325037}:
+	budou vypadat takto\footnote{Kdyby byl problem s\texttt{ cline}, zkuste se podívat třeba sem: http://www.abclinuxu.cz/tex/poradna/show/325037}:
 	
 		\begin{table}[ht]
 			\catcode`\-=12
 			\begin{center}
-				\begin{tabular}{|l|r r|} \hline
+				\begin{tabular}{|l|r|r|} \hline
 					& \multicolumn{2}{c|}{\textbf{Cena}} \\ \cline{2-3}
+					\textbf{Měna} & \textbf{nákup} & \textbf{prodej} \\ \hline
+					EUR & 27,02 & 27,20 \\
+					GBP & 31,08 & 31,80 \\
+					USD & 25,15 & 25,51 \\ \hline
 				\end{tabular}			
 			\end{center}
+			\caption{Tabulka kurzů k dnešnímu dni}
+		\end{table}
+	
+		\begin{table}[ht]
+			\catcode`\-=12
+			\begin{center}
+				\begin{tabular}{|c|c|} \hline
+					$A$ & $\neg A$ \\ \hline
+					\textbf{P} & N \\ \hline
+					\textbf{O} & O \\ \hline
+					\textbf{X} & X \\ \hline
+					\textbf{N} & P \\ \hline					
+				\end{tabular}
+				\begin{tabular}{|c|c|c|c|c|c|} \hline
+					\multicolumn{2}{|c|}{\multirow{2}{*}{$A \wedge B$}} & \multicolumn{4}{|c|}{$B$} \\ \cline{3-6}
+					\multicolumn{2}{|c|}{} & \textbf{P} & \textbf{O} & \textbf{X} & \textbf{N} \\ \hline
+					\multirow{4}{*}{$A$} & \textbf{P} & P & O & X & N \\ \cline{2-6}
+					& \textbf{O} & O & O & N & N \\ \cline{2-6}
+					& \textbf{X} & X & N & X & N \\ \cline{2-6}
+					& \textbf{N} & N & N & N & N \\ \hline
+				\end{tabular}
+				\begin{tabular}{|c|c|c|c|c|c|} \hline
+					\multicolumn{2}{|c|}{\multirow{2}{*}{$A \vee B$}} & \multicolumn{4}{|c|}{$B$} \\ \cline{3-6}
+					\multicolumn{2}{|c|}{} & \textbf{P} & \textbf{O} & \textbf{X} & \textbf{N} \\ \hline
+					\multirow{4}{*}{$A$} & \textbf{P} & P & P & P & P \\ \cline{2-6}
+					& \textbf{O} & P & O & P & O \\ \cline{2-6}
+					& \textbf{X} & P & P & X & X \\ \cline{2-6}
+					& \textbf{N} & P & O & X & N \\ \hline
+				\end{tabular}
+				\begin{tabular}{|c|c|c|c|c|c|} \hline
+					\multicolumn{2}{|c|}{\multirow{2}{*}{$A \rightarrow B$}} & \multicolumn{4}{|c|}{$B$} \\ \cline{3-6}
+					\multicolumn{2}{|c|}{} & \textbf{P} & \textbf{O} & \textbf{X} & \textbf{N} \\ \hline
+					\multirow{4}{*}{$A$} & \textbf{P} & P & O & X & N \\ \cline{2-6}
+					& \textbf{O} & P & O & P & O \\ \cline{2-6}
+					& \textbf{X} & P & P & X & X \\ \cline{2-6}
+					& \textbf{N} & P & P & P & P \\ \hline
+				\end{tabular}
+			\end{center}
+			\caption{Protože Kleeneho trojhodnotová logika už je \uv{zastaralá}, uvádíme si zde příklad čtyřhodnotové logiky}
 		\end{table}
 
 	\section{Algoritmy} \label{algoritmy}
-	Pokud budeme chtít vysázet algoritmus, můžeme použít prostředí \texttt{algorithm}\footnote{Pro nápovědu, jak zacházet s prostředím algorithm, můžeme zkusit tuhle stránku: http://ftp.cstug.cz/pub/tex/CTAN/macros/latex/contrib/algorithms/algorithms.pdf.} nebo \texttt{algorithm2e}\footnote{Pro algorithm2e zase tuhle: http://ftp.cstug.cz/pub/tex/CTAN/macros/latex/contrib/algorithm2e/algorithm2e.pdf.}. Příklad použití prostředí \texttt{algorithm2e} viz Algoritmus ....
-
+	Pokud budeme chtít vysázet algoritmus, můžeme použít prostředí \texttt{algorithm}\footnote{Pro nápovědu, jak zacházet s prostředím \texttt{algorithm}, můžeme zkusit tuhle stránku:\newline http://ftp.cstug.cz/pub/tex/CTAN/macros/latex/contrib/algorithms/algorithms.pdf.} nebo \texttt{algorithm2e}\footnote{Pro \texttt{algorithm2e} zase tuhle: http://ftp.cstug.cz/pub/tex/CTAN/macros/latex/contrib/algorithm2e/algorithm2e.pdf.}. Příklad použití prostředí \texttt{algorithm2e} viz Algoritmus .... \\[1em]
+	
+	\IncMargin{1.5em}
+	{\SetAlgoNoLine
+	\begin{algorithm}[H]
+		\caption{\textsc{FastSLAM}}
+		\SetNlSty{}{}{:}
+		\SetAlgoNlRelativeSize{-1}
+		\SetKwFor{For}{for}{do}{endfor}
+				
+		\Indm
+		\KwIn{$(X_{t-1}, u_t, z_t)$}
+		\KwOut{$X_t$}
+		\BlankLine
+		\Indp
+		
+		$\overline{X_t} = X_t = 0$ \\
+		\For{$k$ \upshape = 1 to $M$}{
+			$x_t^{[k]} = \mathit{sample\_motion\_model}(u_t, x_{t-1}^{[k]})$ \\
+			$\omega_t^{[k]} = \mathit{measurement\_model}(z_t, x_t^{[k]}, m_{t-1})$ \\
+			$m_t^{[k]} = \mathit{updated\_occupancy\_grid}(z_t, x_t^{[k]}, m_{t-1}^{[k]})$ \\
+			$\overline{X_t} = \overline{X_t} + \big<x_x^{[k]},m_t^{[k]}\big>$
+		}
+	
+		\For{$k$ \upshape = 1 to $M$}{
+			draw $i$ with probability $\approx \omega_t^{[i]}$ \\
+			add $\big<x_x^{[k]}, m_t^{[k]}\big>$ to $X_t$
+		}
+		\KwRet{$X_t$}
+	\end{algorithm}
+	}
+	\DecMargin{1.5em}
+	\vspace{1em}
+	
 	\section{Obrázky}
 	Do našich článků můžeme samozřejmě vkládat obrázky. Pokud je obrázkem fotografie,
 	můžeme klidně použít bitmapový soubor. Pokud by to ale mělo být nějaké schéma nebo něco podobného, je dobrým zvykem takovýto obrázek vytvořit vektorově.
+	
+	\begin{figure}[h]
+		\begin{center}
+			\scalebox{0.39}{\includegraphics{etiopan.eps}}%
+			\scalebox{0.39}{\reflectbox{\includegraphics{etiopan.eps}}}\\
+			\caption{Malý Etiopánek a jeho bratříček}
+		\end{center}
+	\end{figure}
+
+	Rozdíl mezi vektorovým \dots
+	
+	\begin{figure}[h]
+		\begin{center}
+			\scalebox{0.43}{\includegraphics{oniisan.eps}}
+			\caption{Vektorový obrázek}
+		\end{center}		
+	\end{figure}
+	
+	\noindent \dots a bitmapovým obrázkem
+	
+	\begin{figure}[h]
+		\begin{center}
+			\scalebox{0.65}{\includegraphics{oniisan2.eps}}
+			\caption{Bitmapový obrázek}
+		\end{center}		
+	\end{figure}
+
+	\noindent se projeví například při zvětšení.
+	
+	Odkazy (nejen ty) na obrázky 1, 2 a 3, na tabulky 1 a 2 a také na algoritmus 1 jsou udělány pomocí křížových odkazů. Pak je ovšem potřeba zdrojový soubor přeložit dvakrát.
+	
+	Vektorové obrázky lze vytvořit i přímo v \LaTeX u, například pomocí prostředí \texttt{picture}.
 \end{document}
