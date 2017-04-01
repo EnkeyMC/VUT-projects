@@ -31,11 +31,28 @@
 	\subsection{Prostředí \texttt{tabbing}}
 	Při použití \texttt{tabbing} vypadá tabulka následovně:
 	
-	Toto prostředí se dá také použít pro sázení algoritmů, ovšem vhodnější je použít prostředí \texttt{algorithm} nebo \texttt{algorithm2e} (viz sekce \ref{algoritmy}).
+		\begin{tabbing}
+			Vodní melouny\qquad \= Cena \qquad \= \kill
+			\textbf{Ovoce} 	\> \textbf{Cena} 	\> \textbf{Množství} \\
+			Jablka 			\> 25,90			\> 3 kg \\
+			Hruška			\> 27,40			\> 2,5 kg \\
+			Vodní melouny	\> 35,--				\> 1 kus \\
+		\end{tabbing}
+	
+	\noindent Toto prostředí se dá také použít pro sázení algoritmů, ovšem vhodnější je použít prostředí \texttt{algorithm} nebo \texttt{algorithm2e} (viz sekce \ref{algoritmy}).
 
 	\subsection{Prostředí \texttt{tabular}}
 	Další možností, jak vytvořit tabulku, je použít prostředí tabular. Tabulky pak 
 	budou vypadat takto\footnote{Kdyby byl problem s cline, zkuste se podívat třeba sem: http://www.abclinuxu.cz/tex/poradna/show/325037}:
+	
+		\begin{table}[ht]
+			\catcode`\-=12
+			\begin{center}
+				\begin{tabular}{|l|r r|} \hline
+					& \multicolumn{2}{c|}{\textbf{Cena}} \\ \cline{2-3}
+				\end{tabular}			
+			\end{center}
+		\end{table}
 
 	\section{Algoritmy} \label{algoritmy}
 	Pokud budeme chtít vysázet algoritmus, můžeme použít prostředí \texttt{algorithm}\footnote{Pro nápovědu, jak zacházet s prostředím algorithm, můžeme zkusit tuhle stránku: http://ftp.cstug.cz/pub/tex/CTAN/macros/latex/contrib/algorithms/algorithms.pdf.} nebo \texttt{algorithm2e}\footnote{Pro algorithm2e zase tuhle: http://ftp.cstug.cz/pub/tex/CTAN/macros/latex/contrib/algorithm2e/algorithm2e.pdf.}. Příklad použití prostředí \texttt{algorithm2e} viz Algoritmus ....

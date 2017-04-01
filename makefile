@@ -11,7 +11,7 @@ convert: copy-tex copy-makefile
 	scp $(USER)@$(HOST):~/$(DIRECTORY)/$(FILENAME).pdf ./$(FILENAME).pdf
 
 copy-tex: $(FILENAME).tex
-	scp $< $(USER)@$(HOST):~/$(DIRECTORY)/
+	scp $< $(USER)@$(HOST):~/$(DIRECTORY)/$<
 
 copy-makefile: $(HOST_MAKE)
 	scp $< $(USER)@$(HOST):~/$(DIRECTORY)/makefile
