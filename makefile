@@ -5,13 +5,17 @@ HOST_MAKE=makefile-merlin
 DIRECTORY=ITY_project_3
 SSH_COMMAND="cd $(DIRECTORY) && make"
 SSH_COMMAND_CLEAN="cd $(DIRECTORY) && make clean"
+EPS=$(wildcard *.eps)
 
-convert: copy-tex copy-makefile 
+convert: copy-tex copy-eps copy-makefile 
 	ssh $(USER)@$(HOST) $(SSH_COMMAND)
 	scp $(USER)@$(HOST):~/$(DIRECTORY)/$(FILENAME).pdf ./$(FILENAME).pdf
 
 copy-tex: $(FILENAME).tex
-	scp $< $(USER)@$(HOST):~/$(DIRECTORY)/$<
+	scp $< $(USER)@$(HOST):~/$(DIRECTORY)/
+
+copy-eps:
+	scp $(EPS) $(USER)@$(HOST):~/$(DIRECTORY)/
 
 copy-makefile: $(HOST_MAKE)
 	scp $< $(USER)@$(HOST):~/$(DIRECTORY)/makefile

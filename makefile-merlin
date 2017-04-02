@@ -3,10 +3,10 @@ BIN = /usr/local/share/texlive/bin
 PS2PDFBIN = /usr/bin
 
 all: $(FILE).ps
-	$(PS2PDFBIN)/ps2pdf $<
+	$(PS2PDFBIN)/ps2pdf -sPAPERSIZE=a4 $<
 
 $(FILE).ps: $(FILE).dvi
-	$(BIN)/dvips -t a4 $<
+	$(BIN)/dvips $<
 
 $(FILE).dvi: $(FILE).tex
 	$(BIN)/latex $<

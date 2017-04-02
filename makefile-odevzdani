@@ -1,10 +1,10 @@
 FILE = proj3
 
 all: $(FILE).ps
-	ps2pdf $<
+	ps2pdf -sPAPERSIZE=a4 $<
 
 $(FILE).ps: $(FILE).dvi
-	dvips -t a4 $<
+	dvips $<
 
 $(FILE).dvi: $(FILE).tex
 	latex $<
