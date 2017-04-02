@@ -6,6 +6,7 @@ DIRECTORY=ITY_project_3
 SSH_COMMAND="cd $(DIRECTORY) && make"
 SSH_COMMAND_CLEAN="cd $(DIRECTORY) && make clean"
 EPS=$(wildcard *.eps)
+ZIP_NAME=xomach00-fit.zip
 
 convert: copy-tex copy-eps copy-makefile 
 	ssh $(USER)@$(HOST) $(SSH_COMMAND)
@@ -31,3 +32,10 @@ clean:
 
 create-directory:
 	ssh $(USER)@$(HOST) "mkdir $(DIRECTORY)"
+
+pack: $(FILENAME).tex makefile $(EPS)
+	mv makefile makefile_
+	mv makefile-odevzdani makefile
+	zip $(ZIP_NAME) $+
+	mv makefile makefile-odevzdani
+	mv makefile_ makefile
