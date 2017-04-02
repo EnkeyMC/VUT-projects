@@ -23,17 +23,17 @@
 			\Huge Tabulky a obrázky
 			\vspace{\stretch{0.618}}
 		\end{center}
-		{\Large 29. března 2017 \hfill Martin Omacht}
+		{\Large \today \hfill Martin Omacht}
 	\end{titlepage}
 	
 	\section{Úvodní strana}
 	Název práce umístěte do zlatého řezu a nezapomeňte uvést dnešní datum a vaše jméno a příjmení.
 	
 	\section{Tabulky}
-	Pro sázení tabulek můžeme použít buď prostředí \texttt{tabbing} nebo prostředí \texttt{tabular}.
+	Pro sázení tabulek můžeme použít buď prostředí\texttt{ tabbing }nebo prostředí\texttt{ tabular}.
 
 	\subsection{Prostředí \texttt{tabbing}}
-	Při použití \texttt{tabbing} vypadá tabulka následovně:
+	Při použití\texttt{ tabbing }vypadá tabulka následovně:
 	
 		\begin{tabbing}
 			Vodní melouny\qquad \= Cena \qquad \= \kill
@@ -43,10 +43,10 @@
 			Vodní melouny	\> 35,--				\> 1 kus \\
 		\end{tabbing}
 	
-	\noindent Toto prostředí se dá také použít pro sázení algoritmů, ovšem vhodnější je použít prostředí \texttt{algorithm} nebo \texttt{algorithm2e} (viz sekce \ref{algoritmy}).
+	\noindent Toto prostředí se dá také použít pro sázení algoritmů, ovšem vhodnější je použít prostředí\texttt{ algorithm }nebo\texttt{ algorithm2e }(viz sekce \ref{algoritmy}).
 
 	\subsection{Prostředí \texttt{tabular}}
-	Další možností, jak vytvořit tabulku, je použít prostředí tabular. Tabulky pak 
+	Další možností, jak vytvořit tabulku, je použít prostředí\texttt{ tabular}. Tabulky pak 
 	budou vypadat takto\footnote{Kdyby byl problem s\texttt{ cline}, zkuste se podívat třeba sem: http://www.abclinuxu.cz/tex/poradna/show/325037}:
 	
 		\begin{table}[ht]
@@ -61,6 +61,7 @@
 				\end{tabular}			
 			\end{center}
 			\caption{Tabulka kurzů k dnešnímu dni}
+			\label{table1}
 		\end{table}
 	
 		\begin{table}[ht]
@@ -99,14 +100,15 @@
 				\end{tabular}
 			\end{center}
 			\caption{Protože Kleeneho trojhodnotová logika už je \uv{zastaralá}, uvádíme si zde příklad čtyřhodnotové logiky}
+			\label{table2}
 		\end{table}
 
 	\section{Algoritmy} \label{algoritmy}
-	Pokud budeme chtít vysázet algoritmus, můžeme použít prostředí \texttt{algorithm}\footnote{Pro nápovědu, jak zacházet s prostředím \texttt{algorithm}, můžeme zkusit tuhle stránku:\newline http://ftp.cstug.cz/pub/tex/CTAN/macros/latex/contrib/algorithms/algorithms.pdf.} nebo \texttt{algorithm2e}\footnote{Pro \texttt{algorithm2e} zase tuhle: http://ftp.cstug.cz/pub/tex/CTAN/macros/latex/contrib/algorithm2e/algorithm2e.pdf.}. Příklad použití prostředí \texttt{algorithm2e} viz Algoritmus .... \\[1em]
+	Pokud budeme chtít vysázet algoritmus, můžeme použít prostředí\texttt{ algorithm}\footnote{Pro nápovědu, jak zacházet s prostředím\texttt{ algorithm}, můžeme zkusit tuhle stránku:\newline http://ftp.cstug.cz/pub/tex/CTAN/macros/latex/contrib/algorithms/algorithms.pdf.}\texttt{ }nebo\texttt{ algorithm2e}\footnote{Pro\texttt{ algorithm2e }zase tuhle: http://ftp.cstug.cz/pub/tex/CTAN/macros/latex/contrib/algorithm2e/algorithm2e.pdf.}. Příklad použití prostředí\texttt{ algorithm2e }viz Algoritmus \ref{algoritmus}. \\[1em]
 	
 	\IncMargin{1.5em}
 	{\SetAlgoNoLine
-	\begin{algorithm}[H]
+	\begin{algorithm}[H] \label{algoritmus}
 		\caption{\textsc{FastSLAM}}
 		\SetNlSty{}{}{:}
 		\SetAlgoNlRelativeSize{-1}
@@ -145,6 +147,7 @@
 			\scalebox{0.39}{\includegraphics{etiopan.eps}}%
 			\scalebox{0.39}{\reflectbox{\includegraphics{etiopan.eps}}}\\
 			\caption{Malý Etiopánek a jeho bratříček}
+			\label{etiopanek}
 		\end{center}
 	\end{figure}
 
@@ -154,6 +157,7 @@
 		\begin{center}
 			\scalebox{0.43}{\includegraphics{oniisan.eps}}
 			\caption{Vektorový obrázek}
+			\label{oniisanvektor}
 		\end{center}		
 	\end{figure}
 	
@@ -163,14 +167,15 @@
 		\begin{center}
 			\scalebox{0.65}{\includegraphics{oniisan2.eps}}
 			\caption{Bitmapový obrázek}
+			\label{oniisanbitmap}
 		\end{center}		
 	\end{figure}
 
 	\noindent se projeví například při zvětšení.
 	
-	Odkazy (nejen ty) na obrázky 1, 2 a 3, na tabulky 1 a 2 a také na algoritmus 1 jsou udělány pomocí křížových odkazů. Pak je ovšem potřeba zdrojový soubor přeložit dvakrát.
+	Odkazy (nejen ty) na obrázky \ref{etiopanek}, \ref{oniisanvektor} a \ref{oniisanbitmap}, na tabulky \ref{table1} a \ref{table2} a také na algoritmus \ref{algoritmus} jsou udělány pomocí křížových odkazů. Pak je ovšem potřeba zdrojový soubor přeložit dvakrát.
 	
-	Vektorové obrázky lze vytvořit i přímo v \LaTeX u, například pomocí prostředí \texttt{picture}.
+	Vektorové obrázky lze vytvořit i přímo v \LaTeX u, například pomocí prostředí\texttt{ picture}.
 	
 	\newpage
 	\begin{landscape}
@@ -180,26 +185,26 @@
 				{\setlength{\fboxsep}{10pt}%
 				\fbox{\begin{picture}(530,270)
 					\put(0,30){\linethickness{5pt}\line(1,0){530}}
-					\put(60,30){\line(0,1){110}}
-					\put(100,30){\line(0,1){45}}
-					\put(100,75){\line(1,0){110}}
-					\put(210,75){\line(3,-1){130}}
-					\put(155,75){\line(-1,1){30}}
-					\put(125,105){\line(1,0){360}}
-					\put(125,105){\line(0,1){20}}
-					\put(125,125){\line(1,0){360}}
-					\put(485,105){\line(0,1){20}}
-					\put(60,140){\line(1,0){130}}
-					\put(190,125){\line(0,1){30}}
-					\put(190,155){\line(1,0){160}}
-					\put(350,125){\line(0,1){30}}
-					\put(350,132){\line(1,0){110}}
-					\put(460,125){\line(0,1){7}}
-					\put(255,60){\line(1,0){230}}
-					\put(485,30){\line(0,1){30}}
-					\put(480,60){\line(0,1){40}}
-					\put(220,72){\line(0,1){28}}
-					\put(220,100){\line(1,0){260}}
+					\put(60,30){\linethickness{1.5pt}\line(0,1){110}}
+					\put(100,30){\linethickness{1.5pt}\line(0,1){45}}
+					\put(100,75){\linethickness{1pt}\line(1,0){110}}
+					\put(210,75){\linethickness{1pt}\line(3,-1){130}}
+					\put(155,75){\linethickness{1pt}\line(-1,1){30}}
+					\put(125,105){\linethickness{1pt}\line(1,0){360}}
+					\put(125,105){\linethickness{1.5pt}\line(0,1){20}}
+					\put(125,125){\linethickness{1pt}\line(1,0){360}}
+					\put(485,105){\linethickness{1pt}\line(0,1){20}}
+					\put(60,140){\linethickness{1pt}\line(1,0){130}}
+					\put(190,125){\linethickness{1.5pt}\line(0,1){30}}
+					\put(190,155){\linethickness{1pt}\line(1,0){160}}
+					\put(350,125){\linethickness{1pt}\line(0,1){30}}
+					\put(350,132){\linethickness{1pt}\line(1,0){110}}
+					\put(460,125){\linethickness{1pt}\line(0,1){7}}
+					\put(255,60){\linethickness{1pt}\line(1,0){230}}
+					\put(485,30){\linethickness{1pt}\line(0,1){30}}
+					\put(480,60){\linethickness{1pt}\line(0,1){40}}
+					\put(220,72){\linethickness{1.5pt}\line(0,1){28}}
+					\put(220,100){\linethickness{1pt}\line(1,0){260}}
 					\put(450,220){\circle{40}}
 				\end{picture}}}
 				\caption{Vektorový obrázek}
