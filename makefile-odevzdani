@@ -1,4 +1,4 @@
-FILE = proj2
+FILE = proj4
 
 all: $(FILE).ps
 	ps2pdf $<
