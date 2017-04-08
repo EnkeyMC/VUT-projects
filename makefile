@@ -3,6 +3,7 @@ EXEC=proj2
 CC=gcc
 CFLAGS=-std=gnu99 -Wall -Wextra -Werror -pedantic
 OBJ_DIR=obj
+ARGS=5 5 5 5 5 5
 
 SRCS=$(wildcard *.c)
 HEADERS=$(wildcard *.h)
@@ -11,7 +12,7 @@ OBJS=$(SRCS:%.c=$(OBJ_DIR)/%.o)
 all: $(EXEC)
 
 $(EXEC): $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $?
+	$(CC) $(CFLAGS) -o $@ $^
 
 $(OBJ_DIR)/%.o: %.c
 	@mkdir -p $(@D)
@@ -26,3 +27,6 @@ pack: $(SRCS) $(HEADERS) Makefile
 
 run: $(EXEC)
 	./$(EXEC)
+
+runargs: $(EXEC)
+	./$(EXEC) $(ARGS)
