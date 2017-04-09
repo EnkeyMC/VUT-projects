@@ -12,6 +12,7 @@
 #include <unistd.h>
 
 #include "utils.h"
+#include "process_type.h"
 
 #define ARG_COUNT 6
 
