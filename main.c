@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <limits.h>
+#include <unistd.h>
 
 #include "utils.h"
 
@@ -75,6 +76,14 @@ int main(int argc, char const *argv[])
 
 	if (!check_args(arguments)) {
 		return EXIT_ARG_ERR;
+	}
+
+	pid_t pid = fork();
+
+	if (pid == 0){
+		printf("I am child.\n");
+	} else {
+		printf("I am parent. %d\n", pid);
 	}
 
 	return EXIT_SUCCESS;
