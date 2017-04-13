@@ -10,6 +10,9 @@
 #include "process.h"
 #include "generators.h"
 
+
+int foo (int argc, int* args) {(void) argc; (void) args; return 0;}
+
 process_t get_proc_info(char type) {
 	process_t proc_info;
 	proc_info.type = type;
@@ -27,11 +30,13 @@ process_t get_proc_info(char type) {
 			break;
 
 		case P_ADULT:
-
+			proc_info.id = 0;
+			proc_info.p_work = &foo;
 			break;
 
 		case P_CHILD:
-
+			proc_info.id = 0;
+			proc_info.p_work = &foo;
 			break;
 
 		default:

@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <limits.h>
+#include <sys/wait.h>
 
 #include "utils.h"
 #include "process.h"
@@ -88,6 +89,15 @@ int main(int argc, char const *argv[])
 
 	if (proc_info.p_work != NULL)
 		(*proc_info.p_work)(ARG_COUNT, arguments);
+
+	if (proc_info.type == P_MAIN) {
+		// Wait for generators to finish
+		for (int i = 0; i < GENERATOR_COUNT; i++) {
+			waitpid(get_gen_pids()[i], NULL, 0);
+		}
+	}
+
+	printf("%c: exited\n", proc_info.type);
 
 	return EXIT_SUCCESS;
 } // main()
