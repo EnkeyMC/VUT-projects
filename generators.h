@@ -19,7 +19,7 @@
 int create_generators(char** error_msg);
 
 /**
- * @brief      Generates child or adult processes based on process type
+ * @brief      Generates child or adult processes based on process type. Worker function for generating process.
  *
  * @param[in]  argc  Argument count
  * @param[in]  args  The arguments
