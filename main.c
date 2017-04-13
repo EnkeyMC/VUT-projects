@@ -9,7 +9,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <limits.h>
-#include <unistd.h>
 
 #include "utils.h"
 #include "process.h"
@@ -21,12 +20,6 @@
 #define EXIT_SYS_CALL_ERR 2
 
 #define TIME_MAX 5000
-
-/**
- * Global variable to identify the process type
- */
-process_t proc_info;
-
 
 /**
  * @brief      Check if arguments are in range
@@ -86,10 +79,15 @@ int main(int argc, char const *argv[])
 		return EXIT_ARG_ERR;
 	}
 
-	create_generators();
+	int ret_code = create_generators(&error_msg);
+
+	if (ret_code == -1) {
+		fprintf(stderr, "%s\n", error_msg);
+		return EXIT_SYS_CALL_ERR;
+	}
 
 	if (proc_info.p_work != NULL)
-		(*proc_info.p_work)();
+		(*proc_info.p_work)(ARG_COUNT, arguments);
 
 	return EXIT_SUCCESS;
 } // main()

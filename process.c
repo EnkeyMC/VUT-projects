@@ -5,6 +5,7 @@
  * @email 		xomach00@stud.fit.vutbr.cz
  * @date    	10.4.2017
  */
+#include <stdlib.h>
 
 #include "process.h"
 #include "generators.h"

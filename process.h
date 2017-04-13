@@ -18,7 +18,7 @@
 /**
  * Pointer to worker function type
  */
-typedef int (*worker_func) ();
+typedef int (*worker_func) (int argc, int* args);
 
 /**
  * Structure that holds information about process.
@@ -29,6 +29,11 @@ typedef struct
 	char type; ///< Process type (see constants P_MAIN, P_ADULT,...)
 	worker_func p_work; ///< Worker function
 } process_t;
+
+/**
+ * Global variable to identify the process type
+ */
+process_t proc_info;
 
 /**
  * @brief      Generate unique id for process type and setup process info

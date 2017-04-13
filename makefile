@@ -25,11 +25,14 @@ clean:
 pack: $(SRCS) $(HEADERS) Makefile
 	zip $(EXEC).zip $^
 
-run: $(EXEC)
+runnoargs: $(EXEC)
 	./$(EXEC)
 
-runargs: $(EXEC)
+run: $(EXEC)
 	./$(EXEC) $(ARGS)
 
 debug: $(EXEC)
 	gdb ./$(EXEC)
+
+valgrind: $(EXEC)
+	valgrind ./$(EXEC) $(ARGS)
