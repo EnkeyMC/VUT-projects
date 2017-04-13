@@ -12,7 +12,8 @@
 #include <unistd.h>
 
 #include "utils.h"
-#include "process_type.h"
+#include "process.h"
+#include "generators.h"
 
 #define ARG_COUNT 6
 
@@ -20,6 +21,11 @@
 #define EXIT_SYS_CALL_ERR 2
 
 #define TIME_MAX 5000
+
+/**
+ * Global variable to identify the process type
+ */
+process_t proc_info;
 
 
 /**
@@ -56,6 +62,7 @@ bool check_args(int* args) {
  */
 int main(int argc, char const *argv[])
 {
+	proc_info = get_proc_info(P_MAIN);
 	/*
 	 * Array for parsed arguments
 	 *  0: A je počet procesů adult; A > 0.
@@ -79,13 +86,10 @@ int main(int argc, char const *argv[])
 		return EXIT_ARG_ERR;
 	}
 
-	pid_t pid = fork();
+	create_generators();
 
-	if (pid == 0){
-		printf("I am child.\n");
-	} else {
-		printf("I am parent. %d\n", pid);
-	}
+	if (proc_info.p_work != NULL)
+		(*proc_info.p_work)();
 
 	return EXIT_SUCCESS;
 } // main()

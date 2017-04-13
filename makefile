@@ -1,7 +1,7 @@
 PROJECT=IOS_project_2
 EXEC=proj2
 CC=gcc
-CFLAGS=-std=gnu99 -Wall -Wextra -Werror -pedantic
+CFLAGS=-std=gnu99 -Wall -Wextra -Werror -pedantic -g
 OBJ_DIR=obj
 ARGS=1 4 1 10 5 5
 
@@ -30,3 +30,6 @@ run: $(EXEC)
 
 runargs: $(EXEC)
 	./$(EXEC) $(ARGS)
+
+debug: $(EXEC)
+	gdb ./$(EXEC)
