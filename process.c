@@ -9,12 +9,11 @@
 
 #include "process.h"
 #include "generators.h"
+#include "child.h"
+#include "adult.h"
 
 
-int foo (int argc, int* args) {(void) argc; (void) args; return 0;}
-
-process_t get_proc_info(char type) {
-	process_t proc_info;
+void set_proc_info(char type) {
 	proc_info.type = type;
 
 	switch (type) {
@@ -31,18 +30,17 @@ process_t get_proc_info(char type) {
 
 		case P_ADULT:
 			proc_info.id = 0;
-			proc_info.p_work = &foo;
+			proc_info.p_work = &adult_work;
 			break;
 
 		case P_CHILD:
 			proc_info.id = 0;
-			proc_info.p_work = &foo;
+			proc_info.p_work = &child_work;
 			break;
 
 		default:
 			break;
 	}
-	return proc_info;
 }
 
 /* end of process.c */

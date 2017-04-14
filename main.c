@@ -56,7 +56,8 @@ bool check_args(int* args) {
  */
 int main(int argc, char const *argv[])
 {
-	proc_info = get_proc_info(P_MAIN);
+	// Executers: P_MAIN
+	set_proc_info(P_MAIN);
 	/*
 	 * Array for parsed arguments
 	 *  0: A je počet procesů adult; A > 0.
@@ -81,14 +82,21 @@ int main(int argc, char const *argv[])
 	}
 
 	int ret_code = create_generators(&error_msg);
-
+	// Executers: P_MAIN, P_ADULT_GEN, P_CHILD_GEN
 	if (ret_code == -1) {
 		fprintf(stderr, "%s\n", error_msg);
 		return EXIT_SYS_CALL_ERR;
 	}
 
-	if (proc_info.p_work != NULL)
-		(*proc_info.p_work)(ARG_COUNT, arguments);
+	// Start worker functions
+	if (proc_info.p_work != NULL) {
+		ret_code = (*proc_info.p_work)(ARG_COUNT, arguments);
+		// Executers: All
+		if (ret_code == -1) {
+			fprintf(stderr, "Error generating child and adult processes.\n");
+			return EXIT_SYS_CALL_ERR;
+		}
+	}
 
 	if (proc_info.type == P_MAIN) {
 		// Wait for generators to finish

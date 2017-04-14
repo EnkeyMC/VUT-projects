@@ -17,7 +17,7 @@ int create_generators(char** error_msg) {
 	pid_t pid = fork();  // Create adult generator
 
 	if (pid == 0) {  // Child process
-		proc_info = get_proc_info(P_ADULT_GEN);
+		set_proc_info(P_ADULT_GEN);
 		return 0;
 	} else if (pid == -1) {
 		sprintf(*error_msg, "Error creating adult generator process.");
@@ -29,7 +29,7 @@ int create_generators(char** error_msg) {
 	pid = fork();  // Create child generator
 
 	if (pid == 0) {  // Child process
-		proc_info = get_proc_info(P_CHILD_GEN);
+		set_proc_info(P_CHILD_GEN);
 		return 0;
 	} else if (pid == -1) {
 		sprintf(*error_msg, "Error creating child generator process.");
@@ -63,12 +63,14 @@ int generate(int argc, int* args) {
 
 		if (pid == 0) {
 			if (proc_info.type == P_ADULT_GEN)
-				proc_info = get_proc_info(P_ADULT);  // Set process type to Adult
+				set_proc_info(P_ADULT);  // Set process type to Adult
 			else
-				proc_info = get_proc_info(P_CHILD);  // Set process type to Child
+				set_proc_info(P_CHILD);  // Set process type to Child
 
 			(*proc_info.p_work)(argc, args);  // Call worker function
 			return 0;
+		} else if (pid == -1) {
+			return -1;
 		}
 	}
 

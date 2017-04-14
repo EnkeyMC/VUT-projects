@@ -34,7 +34,7 @@ int create_generators(char** error_msg);
  * @param[in]  argc  Argument count
  * @param[in]  args  Already checked arguments of the program
  *
- * @return     0 on success, otherwise nonzero
+ * @return     0 on success, -1 on sys call errors
  */
 int generate(int argc, int* args);
 
