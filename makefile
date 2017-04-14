@@ -2,6 +2,7 @@ PROJECT=IOS_project_2
 EXEC=proj2
 CC=gcc
 CFLAGS=-std=gnu99 -Wall -Wextra -Werror -pedantic -g
+LFLAGS=-pthread
 OBJ_DIR=obj
 ARGS=1 4 1 10 5 5
 
@@ -12,7 +13,7 @@ OBJS=$(SRCS:%.c=$(OBJ_DIR)/%.o)
 all: $(EXEC)
 
 $(EXEC): $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $^
+	$(CC) $(CFLAGS) -o $@ $^ $(LFLAGS)
 
 $(OBJ_DIR)/%.o: %.c
 	@mkdir -p $(@D)

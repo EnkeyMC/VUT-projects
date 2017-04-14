@@ -9,6 +9,8 @@
 #ifndef PROCESS_H
 #define PROCESS_H
 
+#include <semaphore.h>
+
 // Process type constants
 #define P_MAIN 'M'
 #define P_ADULT_GEN 'G'
@@ -37,11 +39,33 @@ typedef struct
 process_t proc_info;
 
 /**
+ * Adult process id counter
+ */
+int* _adult_id_shm;
+
+/**
+ * Child process id counter
+ */
+int* _child_id_shm;
+
+/**
+ * POSIX semaphore used to access id counters stored in shared memory
+ */
+sem_t* _proc_sem_shm;
+
+/**
  * @brief      Generate unique id for process type and setup process info
  *
  * @param[in]  type  Type of process (see constants P_MAIN, P_ADULT,...)
  */
 void set_proc_info(char type);
+
+/**
+ * @brief      Setup process resources (shared memory and semaphores)
+ *
+ * @return     0 on success, -1 on error
+ */
+int setup_proc_res();
 
 #endif // PROCESS_H
 /* end of process.h */

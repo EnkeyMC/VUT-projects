@@ -38,7 +38,8 @@ int clean_shm() {
 		}
 	}
 
-	free(_shm_ids);
+	if (_shm_ids != NULL)
+		free(_shm_ids);
 	_shm_ids = NULL;
 	_shm_ids_len = 0;
 

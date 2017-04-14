@@ -14,6 +14,7 @@
 #include "utils.h"
 #include "process.h"
 #include "generators.h"
+#include "shared_mem.h"
 
 #define ARG_COUNT 6
 
@@ -102,6 +103,11 @@ int main(int argc, char const *argv[])
 		// Wait for generators to finish
 		for (int i = 0; i < GENERATOR_COUNT; i++) {
 			waitpid(get_gen_pids()[i], NULL, 0);
+		}
+
+		if (clean_shm() == -1) {
+			fprintf(stderr, "Error cleaning shared memory.\n");
+			return EXIT_SYS_CALL_ERR;
 		}
 	}
 

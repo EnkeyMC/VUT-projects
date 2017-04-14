@@ -9,7 +9,7 @@
 #define SHARED_MEM_H
 
 /**
- * Array of shared memory ids
+ * Dynamic array of shared memory ids
  */
 int* _shm_ids;
 

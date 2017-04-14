@@ -11,6 +11,7 @@
 #include "generators.h"
 #include "child.h"
 #include "adult.h"
+#include "shared_mem.h"
 
 
 void set_proc_info(char type) {
@@ -41,6 +42,22 @@ void set_proc_info(char type) {
 		default:
 			break;
 	}
+}
+
+
+int setup_proc_res() {
+	if ((_adult_id_shm = create_shm(sizeof(int))) == NULL)
+		return -1;
+	*_adult_id_shm = 1;
+
+	if ((_child_id_shm = create_shm(sizeof(int))) == NULL)
+		return -1;
+	*_child_id_shm = 1;
+
+	if ((_proc_sem_shm = create_shm(sizeof(sem_t))) == NULL)
+		return -1;
+
+	return sem_init(_proc_sem_shm, 1, 1);
 }
 
 /* end of process.c */
