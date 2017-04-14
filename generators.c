@@ -54,7 +54,7 @@ int generate(int argc, int* args) {
 		max_wait_time = args[3];
 	}
 
-	srand(time(NULL));  // Start random generator
+	srand(clock());  // Start random generator
 
 	for (int i = 0; i < fork_count; i++) {
 		usleep(rand() % (max_wait_time * 1000));  // Sleep for random time

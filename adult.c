@@ -6,6 +6,8 @@
  * @date    	14.4.2017
  */
 
+#include "adult.h"
+
 int adult_work(int argc, int* args) {
 	(void) argc;
 	int sleep_time = args[4];

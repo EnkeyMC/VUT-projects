@@ -6,6 +6,8 @@
  * @date    	14.4.2017
  */
 
+#include "child.h"
+
 int child_work(int argc, int* args) {
 	(void) argc;
 	int sleep_time = args[5];
