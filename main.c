@@ -23,6 +23,8 @@
 
 #define TIME_MAX 5000
 
+#define SHM_CLEAN_ERR "Error cleaning shared memory.\n"
+
 /**
  * @brief      Check if arguments are in range
  *
@@ -82,17 +84,28 @@ int main(int argc, char const *argv[])
 		return EXIT_ARG_ERR;
 	}
 
+	// Allocate shared memory and create semaphores
+	if (setup_proc_res() == -1) {
+		fprintf(stderr, "Error allocating memory.\n");
+		clean_shm();
+		return EXIT_SYS_CALL_ERR;
+	}
+
 	int ret_code = create_generators(&error_msg);
 	// Executers: P_MAIN, P_ADULT_GEN, P_CHILD_GEN
 	if (ret_code == -1) {
 		fprintf(stderr, "%s\n", error_msg);
+		if (clean_shm() == -1) {
+			fprintf(stderr, SHM_CLEAN_ERR);
+			return EXIT_SYS_CALL_ERR;
+		}
 		return EXIT_SYS_CALL_ERR;
 	}
 
-	// Start worker functions
+	// Start generating
 	if (proc_info.p_work != NULL) {
 		ret_code = (*proc_info.p_work)(ARG_COUNT, arguments);
-		// Executers: All
+		// Executers: P_ADULT_GEN, P_CHILD_GEN, P_ADULT, P_CHILD
 		if (ret_code == -1) {
 			fprintf(stderr, "Error generating child and adult processes.\n");
 			return EXIT_SYS_CALL_ERR;
@@ -106,12 +119,12 @@ int main(int argc, char const *argv[])
 		}
 
 		if (clean_shm() == -1) {
-			fprintf(stderr, "Error cleaning shared memory.\n");
+			fprintf(stderr, SHM_CLEAN_ERR);
 			return EXIT_SYS_CALL_ERR;
 		}
 	}
 
-	printf("%c: exited\n", proc_info.type);
+	printf("%c%d: exited\n", proc_info.type, proc_info.id);
 
 	return EXIT_SUCCESS;
 } // main()

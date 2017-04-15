@@ -57,7 +57,8 @@ int generate(int argc, int* args) {
 	srand(clock());  // Start random generator
 
 	for (int i = 0; i < fork_count; i++) {
-		usleep(rand() % (max_wait_time * 1000));  // Sleep for random time
+		if (max_wait_time != 0)
+			usleep(rand() % (max_wait_time * 1000));  // Sleep for random time
 
 		pid_t pid = fork();
 

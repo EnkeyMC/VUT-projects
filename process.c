@@ -30,13 +30,17 @@ void set_proc_info(char type) {
 			break;
 
 		case P_ADULT:
-			proc_info.id = 0;
+			sem_wait(_proc_sem_shm);
+			proc_info.id = (*_adult_id_shm)++;
 			proc_info.p_work = &adult_work;
+			sem_post(_proc_sem_shm);
 			break;
 
 		case P_CHILD:
-			proc_info.id = 0;
+			sem_wait(_proc_sem_shm);
+			proc_info.id = (*_child_id_shm)++;
 			proc_info.p_work = &child_work;
+			sem_post(_proc_sem_shm);
 			break;
 
 		default:
@@ -46,15 +50,15 @@ void set_proc_info(char type) {
 
 
 int setup_proc_res() {
-	if ((_adult_id_shm = create_shm(sizeof(int))) == NULL)
+	if ((_adult_id_shm = (int*) create_shm(sizeof(int))) == NULL)
 		return -1;
 	*_adult_id_shm = 1;
 
-	if ((_child_id_shm = create_shm(sizeof(int))) == NULL)
+	if ((_child_id_shm = (int*) create_shm(sizeof(int))) == NULL)
 		return -1;
 	*_child_id_shm = 1;
 
-	if ((_proc_sem_shm = create_shm(sizeof(sem_t))) == NULL)
+	if ((_proc_sem_shm = (sem_t*) create_shm(sizeof(sem_t))) == NULL)
 		return -1;
 
 	return sem_init(_proc_sem_shm, 1, 1);

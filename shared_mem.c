@@ -10,20 +10,25 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include <sys/types.h>
+#include <errno.h>
+#include <stdio.h>
 
 #include "shared_mem.h"
 
 
 void* create_shm(size_t size) {
-	int id = shmget(IPC_PRIVATE, size, IPC_CREAT | IPC_EXCL);
+	int id = shmget(IPC_PRIVATE, size, IPC_CREAT | IPC_EXCL | 0666);
 
 	if (id == -1) {
 		return NULL;
 	}
 
-	_save_id(id);
 	void* mem = shmat(id, NULL, 0);
 
+	if (mem == (void*) -1) {
+		return NULL;
+	}
+	_save_id(id);
 	return mem;
 }
 

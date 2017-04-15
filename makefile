@@ -37,3 +37,6 @@ debug: $(EXEC)
 
 valgrind: $(EXEC)
 	valgrind ./$(EXEC) $(ARGS)
+
+valgrind-full: $(EXEC)
+	valgrind --leak-check=full --show-leak-kinds=all ./$(EXEC) $(ARGS)
