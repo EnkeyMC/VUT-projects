@@ -7,10 +7,10 @@ SSH_COMMAND="cd $(DIRECTORY) && make"
 SSH_COMMAND_CLEAN="cd $(DIRECTORY) && make clean"
 EPS=$(wildcard *.eps)
 BIB=$(wildcard *.bib)
-ISO=$(wildcard *.iso)
+BST=$(wildcard *.bst)
 ZIP_NAME=xomach00-fit.zip
 
-convert: copy-tex copy-bib copy-iso copy-makefile 
+convert: copy-tex copy-bib copy-bst copy-makefile 
 	ssh $(USER)@$(HOST) $(SSH_COMMAND)
 	scp $(USER)@$(HOST):~/$(DIRECTORY)/$(FILENAME).pdf ./$(FILENAME).pdf
 
@@ -23,8 +23,8 @@ copy-eps:
 copy-bib:
 	scp $(BIB) $(USER)@$(HOST):~/$(DIRECTORY)/
 
-copy-iso:
-	scp $(ISO) $(USER)@$(HOST):~/$(DIRECTORY)/	
+copy-bst:
+	scp $(BST) $(USER)@$(HOST):~/$(DIRECTORY)/		
 
 copy-makefile: $(HOST_MAKE)
 	scp $< $(USER)@$(HOST):~/$(DIRECTORY)/makefile
@@ -43,7 +43,7 @@ clean:
 create-directory:
 	ssh $(USER)@$(HOST) "mkdir $(DIRECTORY)"
 
-pack: $(FILENAME).tex makefile $(EPS) $(BIB)
+pack: $(FILENAME).tex makefile $(EPS) $(BIB) $(BST)
 	mv makefile makefile_
 	mv makefile-odevzdani makefile
 	zip $(ZIP_NAME) $+

@@ -8,13 +8,14 @@ $(FILE).ps: $(FILE).dvi
 
 $(FILE).dvi: $(FILE).tex
 	latex $<
-	bibtex $<
+	bibtex $(FILE)
 	latex $<
 	latex $<
 
 clean:
-	rm $(FILE).dvi
-	rm $(FILE).ps
-	rm $(FILE).pdf
-	rm $(FILE).log
-	rm $(FILE).aux
+	rm -f $(FILENAME).dvi
+	rm -f $(FILENAME).ps
+	rm -f $(FILENAME).pdf
+	rm -f $(FILENAME).log
+	rm -f *.bbl
+	rm -f *.blg
