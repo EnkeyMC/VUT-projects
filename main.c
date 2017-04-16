@@ -15,6 +15,7 @@
 #include "process.h"
 #include "generators.h"
 #include "shared_mem.h"
+#include "center.h"
 
 #define ARG_COUNT 6
 
@@ -24,6 +25,7 @@
 #define TIME_MAX 5000
 
 #define SHM_CLEAN_ERR "Error cleaning shared memory.\n"
+#define SHM_ALLOC_ERR "Error allocating memory.\n"
 
 /**
  * @brief      Check if arguments are in range
@@ -86,7 +88,13 @@ int main(int argc, char const *argv[])
 
 	// Allocate shared memory and create semaphores
 	if (setup_proc_res() == -1) {
-		fprintf(stderr, "Error allocating memory.\n");
+		fprintf(stderr, SHM_ALLOC_ERR);
+		clean_shm();
+		return EXIT_SYS_CALL_ERR;
+	}
+
+	if (setup_center_res() == -1) {
+		fprintf(stderr, SHM_ALLOC_ERR);
 		clean_shm();
 		return EXIT_SYS_CALL_ERR;
 	}

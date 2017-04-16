@@ -4,7 +4,7 @@ CC=gcc
 CFLAGS=-std=gnu99 -Wall -Wextra -Werror -pedantic -g
 LFLAGS=-pthread
 OBJ_DIR=obj
-ARGS=1 4 1 10 5 5
+ARGS=3 4 1 10 5 5
 
 SRCS=$(wildcard *.c)
 HEADERS=$(wildcard *.h)
@@ -23,7 +23,7 @@ clean:
 	rm -rf $(OBJ_DIR)
 	rm $(EXEC)
 
-pack: $(SRCS) $(HEADERS) Makefile
+pack: $(SRCS) $(HEADERS) makefile
 	zip $(EXEC).zip $^
 
 runnoargs: $(EXEC)
