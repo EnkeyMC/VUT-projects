@@ -9,14 +9,14 @@
 #define CHILD_H
 
 /**
- * @brief      Child process worker function. Simulates entering and leaving center.
+ * @brief      Child process worker function. Simulates entering and leaving
+ *             center.
  *
- * @param[in]  argc  Argument count
  * @param[in]  args  Already checked arguments of the program
  *
  * @return     0 on success, otherwise nonzero
  */
-int child_work(int argc, int* args);
+int child_work(int* args);
 
 #endif // CHILD_H
 /* end of child.h */

@@ -9,14 +9,14 @@
 #define ADULT_H
 
 /**
- * @brief      Adult process worker function. Simulates entering and leaving center.
+ * @brief      Adult process worker function. Simulates entering and leaving
+ *             center.
  *
- * @param[in]  argc  Argument count
  * @param[in]  args  Already checked arguments of the program
  *
  * @return     0 on success, otherwise nonzero
  */
-int adult_work(int argc, int* args);
+int adult_work(int* args);
 
 #endif // ADULT_H
 /* end of adult.h */

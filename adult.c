@@ -5,13 +5,29 @@
  * @email 		xomach00@stud.fit.vutbr.cz
  * @date    	14.4.2017
  */
+#include <stdlib.h>
+#include <time.h>
+#include <unistd.h>
 
 #include "adult.h"
+#include "center.h"
+#include "output.h"
 
-int adult_work(int argc, int* args) {
-	(void) argc;
+int adult_work(int* args) {
 	int sleep_time = args[4];
-	(void) sleep_time;
+
+	output_write(MSG_STARTED);
+	// Enter center
+	adult_enter_center();
+
+	// Simulate work in center
+	if (sleep_time != 0) {
+		srand(clock());
+		usleep(rand() % (sleep_time * 1000));
+	}
+
+	adult_leave_center();
+
 	return 0;
 }
 

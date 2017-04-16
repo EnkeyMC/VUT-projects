@@ -29,14 +29,14 @@ pid_t _gen_pids[GENERATOR_COUNT];
 int create_generators(char** error_msg);
 
 /**
- * @brief      Generates child or adult processes based on process type. Worker function for generating process.
+ * @brief      Generates child or adult processes based on process type. Worker
+ *             function for generating process.
  *
- * @param[in]  argc  Argument count
  * @param[in]  args  Already checked arguments of the program
  *
  * @return     0 on success, -1 on sys call errors
  */
-int generate(int argc, int* args);
+int generate(int* args);
 
 /**
  * @brief      Get array of generator process IDs

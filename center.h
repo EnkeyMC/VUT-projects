@@ -51,35 +51,23 @@ int setup_center_res();
 
 /**
  * @brief      Try to enter the center as a child
- *
- * @param[in]  wait  Whether to wait or not if child can't enter now
- *
- * @return     0 on success, -1 on error, 1 child cannot enter now
  */
-int child_enter_center(bool wait);
+void child_enter_center();
 
 /**
  * @brief      Leave the center as a child
- *
- * @return     0 on success, -1 on error
  */
-int child_leave_center();
+void child_leave_center();
 
 /**
  * @brief      Enter center as an adult
- *
- * @return     0 on success, -1 on error
  */
-int adult_enter_center();
+void adult_enter_center();
 
 /**
  * @brief      Leave the cetner as an adult
- *
- * @param[in]  wait  Whether to wait or not if adult can't leave now
- *
- * @return     0 on success, -1 on error, 1 adult cannot leave now
  */
-int adult_leave_center(bool wait);
+void adult_leave_center();
 
 /**
  * @brief      Set blocking of other processes from entering center
@@ -87,6 +75,20 @@ int adult_leave_center(bool wait);
  * @param[in]  block  Set blocking to true or false
  */
 void block_enter(bool block);
+
+/**
+ * @brief      Gets the adult count.
+ *
+ * @return     The adult count.
+ */
+int get_adult_count();
+
+/**
+ * @brief      Gets the child count.
+ *
+ * @return     The child count.
+ */
+int get_child_count();
 
 #endif // CENTER_H
 /* end of center.h */

@@ -16,6 +16,7 @@
 #include "generators.h"
 #include "shared_mem.h"
 #include "center.h"
+#include "output.h"
 
 #define ARG_COUNT 6
 
@@ -99,6 +100,12 @@ int main(int argc, char const *argv[])
 		return EXIT_SYS_CALL_ERR;
 	}
 
+	if (setup_output_res() == -1) {
+		fprintf(stderr, SHM_ALLOC_ERR);
+		clean_shm();
+		return EXIT_SYS_CALL_ERR;
+	}
+
 	int ret_code = create_generators(&error_msg);
 	// Executers: P_MAIN, P_ADULT_GEN, P_CHILD_GEN
 	if (ret_code == -1) {
@@ -112,7 +119,7 @@ int main(int argc, char const *argv[])
 
 	// Start generating
 	if (proc_info.p_work != NULL) {
-		ret_code = (*proc_info.p_work)(ARG_COUNT, arguments);
+		ret_code = (*proc_info.p_work)(arguments);
 		// Executers: P_ADULT_GEN, P_CHILD_GEN, P_ADULT, P_CHILD
 		if (ret_code == -1) {
 			fprintf(stderr, "Error generating child and adult processes.\n");

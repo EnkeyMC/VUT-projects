@@ -21,7 +21,7 @@
 /**
  * Pointer to worker function type
  */
-typedef int (*worker_func) (int argc, int* args);
+typedef int (*worker_func) (int* args);
 
 /**
  * Structure that holds information about process.

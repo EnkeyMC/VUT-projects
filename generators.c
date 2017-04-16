@@ -42,7 +42,7 @@ int create_generators(char** error_msg) {
 }
 
 
-int generate(int argc, int* args) {
+int generate(int* args) {
 	int fork_count;  // Amount of childs or adults to generate
 	int max_wait_time;  // Max time (in miliseconds) to wait between generating
 
@@ -68,7 +68,7 @@ int generate(int argc, int* args) {
 			else
 				set_proc_info(P_CHILD);  // Set process type to Child
 
-			(*proc_info.p_work)(argc, args);  // Call worker function
+			(*proc_info.p_work)(args);  // Call worker function
 			return 0;
 		} else if (pid == -1) {
 			return -1;
