@@ -8,6 +8,8 @@ $(FILE).ps: $(FILE).dvi
 
 $(FILE).dvi: $(FILE).tex
 	latex $<
+	bibtex $<
+	latex $<
 	latex $<
 
 clean:

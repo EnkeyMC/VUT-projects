@@ -1,4 +1,4 @@
-\documentclass[11pt,a4paper,twocolumn]{article}
+\documentclass[12pt,a4paper]{article}
 
 \usepackage[left=2cm, text={17cm,24cm}, top=3cm]{geometry}
 \usepackage[utf8]{inputenc}
@@ -6,6 +6,10 @@
 \usepackage{times}
 \usepackage[IL2]{fontenc}
 
+\usepackage{url}
+\DeclareUrlCommand\url{\def\UrlLeft{<}\def\UrlRight{>} \urlstyle{tt}}
+
+\bibliographystyle{czechiso}
 \begin{document}
 	\begin{titlepage}
 		\begin{center}
@@ -21,4 +25,52 @@
 		\end{center}
 		{\Large \today \hfill Martin Omacht}
 	\end{titlepage}
+	
+	\section{Co je to data mining?}
+	Dolování dat, je definováno jako proces objevování různých vzorů v datech. Tento proces musí být automatický nebo (většinou) poloautomatický. Vyhledané vzory musí být smysluplné, tak že vedou k nějaké výhodě, většinou ekonomické. Data jsou vždy přítomné v podstatném množství. \cite{7025:DataMining}
+	
+	\section{Užití data miningu}
+	\begin{quote}
+		\emph{\uv{Where there are data, there are data mining applications}} \cite{9813:DataMining}
+	\end{quote}
+	Data mining se užívá téměř všude, kde jsou data. Dá se rozdělit do dvou hlavních skupin\,--\,predikce a deskripce. \cite{Online:PredikceDeskripce} Příklad predikce je software MineCarTM, který využívá nejen aktuálně naměřené data o vozidlu, ale také historické data, informace o zájmech majitele vozidla a detaily o opravě. Pomocí data miningu poté předem upozorní na potřebnou opravu nebo prohlídku vozidla. \cite{Article:VehiclePerformance}
+	
+	Společnost Apple si například nechala patentovat metodu analýzy výkonu softwaru pomocí data miningu. \cite{Article:ApplePatent}
+	
+	\section{Dataminingové úlohy}
+	Úlohy data miningu můžeme rozdělit do několika skupin:
+	\begin{itemize}
+		\item Klasifikace
+		\item Shlukování/Segmentace
+		\item Predikce
+		\item Regrese
+		\item Asociační pravidla
+		\item Text Mining \cite{Online:UvodDoDataMiningu}
+	\end{itemize}
+	
+	\section{Algoritmy data miningu}
+	Existuje mnoho algoritmů pro dolování dat, proto zde vyjmenuju jenom pár z nich.
+	
+	\subsection{Rozhodovací stromy}
+	Rozhodovací stromy jsou jednoduchou, ale užitečnou formou analýzy vícero proměnných. Nabízejí unikátní možnosti, jak doplnit nebo nahradit:
+	\begin{itemize}
+		\item Tradiční statistické formy analýzy (např. násobná lineární regrese)
+		\item Různé druhy nástrojů dolování z dat (např. neuronové sítě)
+		\item Nedávno vyvinuté vícerozměrné formy reportů a analýz v oboru business intelligence~9 \cite{Thesis:JaroslavFabian}
+	\end{itemize}
+	
+	\subsection{\emph{k}-means algoritmus}
+	Tento algoritmus je jednoduchá iterativní metoda rozdělení daných dat na uživatesky specifikovaný počet shluků. Byl objeven několika vědci z různých oborů, zejména Lloydem (1957, 1982), Forgeyem (1965), Friedmanem a Rubinem (1967) a McQueenem (1967). \cite{Online:Top10Algorithms}
+	
+	\subsection{Support vector machines}
+	Support vector machines je metoda, která hledá nejlepší rozhodovací linii mezi třídami dat. Lineární jádrovou funkci pro tento typ učení nalezl Vladimir Vapnik v roce 1963. Třídy by se neměli být lineárně separovatelné a nepřekrývající se. \cite{Thesis:JosefHricko}
+	%https://dspace.vutbr.cz/xmlui/handle/11012/56100
+	
+	\section{Zrychlení data miningu}
+	Některé algoritmy pro data mining jsou výpočetně velice náročné a analýza dat tak může trvat několik hodin. Pro zrychlení analýzy existují různé alternativy. Zatímco někteří uživatelé spoléhají na cloudové řešení, heterogení prostředí založené na GPU architekturách se jeví jako cenné řešení pro zlepšní výkonu s významnou úsporou nákladů. \cite{Conference:GPUAcceleration}
+	%http://www.sciencedirect.com/science/article/pii/S1877050914006024
+	
+	\newpage
+	\bibliography{citace}
+	
 \end{document}

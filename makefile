@@ -6,9 +6,11 @@ DIRECTORY=ITY_project_4
 SSH_COMMAND="cd $(DIRECTORY) && make"
 SSH_COMMAND_CLEAN="cd $(DIRECTORY) && make clean"
 EPS=$(wildcard *.eps)
+BIB=$(wildcard *.bib)
+ISO=$(wildcard *.iso)
 ZIP_NAME=xomach00-fit.zip
 
-convert: copy-tex copy-eps copy-makefile 
+convert: copy-tex copy-bib copy-iso copy-makefile 
 	ssh $(USER)@$(HOST) $(SSH_COMMAND)
 	scp $(USER)@$(HOST):~/$(DIRECTORY)/$(FILENAME).pdf ./$(FILENAME).pdf
 
@@ -18,6 +20,12 @@ copy-tex: $(FILENAME).tex
 copy-eps:
 	scp $(EPS) $(USER)@$(HOST):~/$(DIRECTORY)/
 
+copy-bib:
+	scp $(BIB) $(USER)@$(HOST):~/$(DIRECTORY)/
+
+copy-iso:
+	scp $(ISO) $(USER)@$(HOST):~/$(DIRECTORY)/	
+
 copy-makefile: $(HOST_MAKE)
 	scp $< $(USER)@$(HOST):~/$(DIRECTORY)/makefile
 
@@ -25,15 +33,17 @@ clean-merlin:
 	ssh $(USER)@$(HOST) $(SSH_COMMAND_CLEAN)
 
 clean:
-	rm $(FILENAME).dvi
-	rm $(FILENAME).ps
-	rm $(FILENAME).pdf
-	rm $(FILENAME).log
+	rm -f $(FILENAME).dvi
+	rm -f $(FILENAME).ps
+	rm -f $(FILENAME).pdf
+	rm -f $(FILENAME).log
+	rm -f *.bbl
+	rm -f *.blg
 
 create-directory:
 	ssh $(USER)@$(HOST) "mkdir $(DIRECTORY)"
 
-pack: $(FILENAME).tex makefile $(EPS)
+pack: $(FILENAME).tex makefile $(EPS) $(BIB)
 	mv makefile makefile_
 	mv makefile-odevzdani makefile
 	zip $(ZIP_NAME) $+

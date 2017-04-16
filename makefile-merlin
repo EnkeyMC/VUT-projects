@@ -10,6 +10,8 @@ $(FILE).ps: $(FILE).dvi
 
 $(FILE).dvi: $(FILE).tex
 	$(BIN)/latex $<
+	$(BIN)/bibtex $(FILE)
+	$(BIN)/latex $<
 	$(BIN)/latex $<
 
 clean:
