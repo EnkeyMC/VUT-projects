@@ -28,6 +28,11 @@ void* create_shm(size_t size) {
 	if (mem == (void*) -1) {
 		return NULL;
 	}
+
+	if (shmctl(id, IPC_RMID, NULL) == -1) {
+		return NULL;
+	}
+
 	_save_id(id);
 	return mem;
 }
@@ -38,7 +43,7 @@ int clean_shm() {
 
 	for (int i = 0; i < _shm_ids_len; ++i)
 	{
-		if (shmctl(_shm_ids[i], IPC_RMID, NULL) == -1) {
+		if (shmdt(_shm_ids[i]) == -1) {
 			ret_code = -1;
 		}
 	}

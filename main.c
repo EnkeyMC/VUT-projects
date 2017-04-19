@@ -17,6 +17,7 @@
 #include "shared_mem.h"
 #include "center.h"
 #include "output.h"
+#include "debug.h"
 
 #define ARG_COUNT 6
 
@@ -50,6 +51,40 @@ bool check_args(int* args) {
 		}
 	}
 	return true;
+}
+
+
+/**
+ * @brief      Setup shared memory and semaphores
+ *
+ * @return     0 on success, -1 on error
+ */
+int setup_resources() {
+	// Allocate shared memory and create semaphores
+	if (setup_proc_res() == -1) {
+		fprintf(stderr, SHM_ALLOC_ERR);
+		clean_shm();
+		return -1;
+	}
+
+	if (setup_center_res() == -1) {
+		fprintf(stderr, SHM_ALLOC_ERR);
+		clean_shm();
+		return -1;
+	}
+
+	if (setup_output_res() == -1) {
+		fprintf(stderr, SHM_ALLOC_ERR);
+		clean_shm();
+		return -1;
+	}
+
+	if (setup_debug_res() == -1) {
+		fprintf(stderr, SHM_ALLOC_ERR);
+		clean_shm();
+		return -1;
+	}
+	return 0;
 }
 
 /**
@@ -87,25 +122,10 @@ int main(int argc, char const *argv[])
 		return EXIT_ARG_ERR;
 	}
 
-	// Allocate shared memory and create semaphores
-	if (setup_proc_res() == -1) {
-		fprintf(stderr, SHM_ALLOC_ERR);
-		clean_shm();
+	if (setup_resources() == -1) {
 		return EXIT_SYS_CALL_ERR;
 	}
-
-	if (setup_center_res() == -1) {
-		fprintf(stderr, SHM_ALLOC_ERR);
-		clean_shm();
-		return EXIT_SYS_CALL_ERR;
-	}
-
-	if (setup_output_res() == -1) {
-		fprintf(stderr, SHM_ALLOC_ERR);
-		clean_shm();
-		return EXIT_SYS_CALL_ERR;
-	}
-
+	
 	int ret_code = create_generators(&error_msg);
 	// Executers: P_MAIN, P_ADULT_GEN, P_CHILD_GEN
 	if (ret_code == -1) {

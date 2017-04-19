@@ -12,6 +12,7 @@
 #include "shared_mem.h"
 #include "process.h"
 #include "center.h"
+#include "debug.h"
 
 
 int setup_output_res() {
@@ -39,6 +40,7 @@ int setup_output_res() {
 
 
 int output_write(char* msg) {
+	debug(msg);
 	sem_wait(_output_access_sem_shm);
 
 	FILE* fp = fopen(FILENAME, "a");
@@ -48,12 +50,12 @@ int output_write(char* msg) {
 		return -1;
 	}
 
-	//if (strcmp(msg, MSG_WAITING) == 0)
+	if (strcmp(msg, MSG_WAITING) == 0)
 		fprintf(fp, "%d\t: %c %d\t: %s : %d : %d\n", (*_output_counter_shm)++, proc_info.type, 
 			proc_info.id, msg, get_adult_count(), get_child_count());
-	/*else
+	else
 		fprintf(fp, "%d\t: %c %d\t: %s\n", (*_output_counter_shm)++, proc_info.type, proc_info.id, msg);
-*/
+
 	if (fclose(fp) == EOF) {
 		fprintf(stderr, "Could not close file '%s'!\n", FILENAME);
 		return -1;

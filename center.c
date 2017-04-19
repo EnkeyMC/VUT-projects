@@ -11,6 +11,7 @@
 #include "center.h"
 #include "shared_mem.h"
 #include "output.h"
+#include "debug.h"
 
 
 int setup_center_res() {
@@ -86,17 +87,17 @@ void adult_leave_center() {
 
 	int i;
 	for (i = 0; i < CHILDREN_PER_ADULT; i++) {
-		output_write("Trying in loop");
+		debug("Trying in loop");
 		if (sem_trywait(_center_sem_shm) == -1 && errno == EAGAIN) {
 			break;
 		}
 	}
-	output_write("Tried");
+	debug("Tried");
 	// If adult cannot leave, increment semaphore back
 	if (i != CHILDREN_PER_ADULT) {
-		output_write("Gotta wait");
-		for (int j = 0; j < i; i++) {
-			output_write("Unlocking");
+		debug("Gotta wait");
+		for (int j = 0; j < i; j++) {
+			debug("Unlocking");
 			sem_post(_center_sem_shm);
 		}
 
@@ -104,7 +105,7 @@ void adult_leave_center() {
 		block_enter(false);
 		// Wait again for children to leave
 		for (i = 0; i < CHILDREN_PER_ADULT; i++) {
-			output_write("Waiting...");
+			debug("Waiting...");
 			sem_wait(_center_sem_shm);
 		}
 
