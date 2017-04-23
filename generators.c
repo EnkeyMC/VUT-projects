@@ -12,6 +12,29 @@
 
 #include "generators.h"
 #include "process.h"
+#include "shared_mem.h"
+#include "debug.h"
+
+int setup_generators_res() {
+	if ((_adults_generated_shm = (bool*) create_shm(sizeof(bool))) == NULL)
+		return -1;
+	*_adults_generated_shm = false;
+
+	if ((_gen_access_sem_shm = (sem_t*) create_shm(sizeof(sem_t))) == NULL)
+		return -1;
+
+	return sem_init(_gen_access_sem_shm, 1, 1);
+}
+
+
+bool all_adults_generated() {
+	bool ret_val;
+	sem_wait(_gen_access_sem_shm);
+	ret_val = *_adults_generated_shm;
+	sem_post(_gen_access_sem_shm);
+	return ret_val;
+}
+
 
 int create_generators(char** error_msg) {
 	pid_t pid = fork();  // Create adult generator
@@ -73,6 +96,13 @@ int generate(int* args) {
 		} else if (pid == -1) {
 			return -1;
 		}
+	}
+
+	if (proc_info.type == P_ADULT_GEN) {
+		sem_wait(_gen_access_sem_shm);
+		debug("Adults generated");
+		*_adults_generated_shm = true;
+		sem_post(_gen_access_sem_shm);
 	}
 
 	for (int i = 0; i < fork_count; i++)

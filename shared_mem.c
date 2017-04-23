@@ -33,7 +33,7 @@ void* create_shm(size_t size) {
 		return NULL;
 	}
 
-	_save_id(id);
+	_save_addr(mem);
 	return mem;
 }
 
@@ -41,40 +41,40 @@ void* create_shm(size_t size) {
 int clean_shm() {
 	int ret_code = 0;
 
-	for (int i = 0; i < _shm_ids_len; ++i)
+	for (int i = 0; i < _shm_addrs_len; ++i)
 	{
-		if (shmdt(_shm_ids[i]) == -1) {
+		if (shmdt(_shm_addrs[i]) == -1) {
 			ret_code = -1;
 		}
 	}
 
-	if (_shm_ids != NULL)
-		free(_shm_ids);
-	_shm_ids = NULL;
-	_shm_ids_len = 0;
+	if (_shm_addrs != NULL)
+		free(_shm_addrs);
+	_shm_addrs = NULL;
+	_shm_addrs_len = 0;
 
 	return ret_code;
 }
 
 
-int _save_id(int id) {
-	if (_shm_ids == NULL) {
-		_shm_ids = (int*) malloc(sizeof(int));
+int _save_addr(void* shm_addr) {
+	if (_shm_addrs == NULL) {
+		_shm_addrs = (void**) malloc(sizeof(void*));
 
-		if (_shm_ids == NULL) {
+		if (_shm_addrs == NULL) {
 			return -1;
 		}
 
-		_shm_ids_len = 1;
+		_shm_addrs_len = 1;
 	} else {
-		_shm_ids = (int*) realloc(_shm_ids, sizeof(int) * (++_shm_ids_len));
+		_shm_addrs = (void**) realloc(_shm_addrs, sizeof(void*) * (++_shm_addrs_len));
 
-		if (_shm_ids == NULL) {
+		if (_shm_addrs == NULL) {
 			return -1;
 		}
 	}
 
-	_shm_ids[_shm_ids_len - 1] = id;
+	_shm_addrs[_shm_addrs_len - 1] = shm_addr;
 	return 0;
 }
 

@@ -4,6 +4,9 @@
  * @author 		Martin Omacht
  * @email 		xomach00@stud.fit.vutbr.cz
  * @date    	7.4.2017
+ * 
+ * @todo 		Destroy semaphores
+ * @todo 		Wait for all proccesses in center to finish
  */
 #include <stdio.h>
 #include <stdlib.h>

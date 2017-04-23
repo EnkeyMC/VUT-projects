@@ -9,14 +9,14 @@
 #define SHARED_MEM_H
 
 /**
- * Dynamic array of shared memory ids
+ * Dynamic array of shared memory addresses
  */
-int* _shm_ids;
+void** _shm_addrs;
 
 /**
- * Length of shared memory id array
+ * Length of shared memory addresses array
  */
-int _shm_ids_len;
+int _shm_addrs_len;
 
 /**
  * @brief      Create and attach shared memory.
@@ -35,15 +35,15 @@ void* create_shm(size_t size);
 int clean_shm();
 
 /**
- * @brief      Saves shared memory identifier.
+ * @brief      Saves shared memory address.
  *
  *             Handles memory allocation and reallocation.
  *
- * @param[in]  id    The identifier
+ * @param      shm_addr  The shared memory address
  *
  * @return     0 on success, -1 on error
  */
-int _save_id(int id);
+int _save_addr(void* shm_addr);
 
 #endif // SHARED_MEM_H
 /* end of shared_mem.h */

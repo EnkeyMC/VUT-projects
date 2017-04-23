@@ -10,14 +10,40 @@
 #define GENERATORS_H
 
 #include <unistd.h>
+#include <stdbool.h>
+#include <semaphore.h>
 
 #define GENERATOR_COUNT 2
+
+/**
+ * Indicator if all adults were generated
+ */
+bool* _adults_generated_shm;
+
+/**
+ * Semaphore to access _adults_generated_shm
+ */
+sem_t* _gen_access_sem_shm;
 
 /**
  * Array of generator process IDs. Filled after calling create_generators().
  * Use get_gen_pids() to access it.
  */
 pid_t _gen_pids[GENERATOR_COUNT];
+
+/**
+ * @brief      Allocate shared memory and semaphores
+ *
+ * @return     0 on success, -1 on error
+ */
+int setup_generators_res();
+
+/**
+ * @brief      Are all adults generated
+ *
+ * @return     Whether all adults are already genereated
+ */
+bool all_adults_generated();
 
 /**
  * @brief      Create child and adult process generators.

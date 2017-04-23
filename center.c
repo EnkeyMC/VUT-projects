@@ -12,6 +12,7 @@
 #include "shared_mem.h"
 #include "output.h"
 #include "debug.h"
+#include "generators.h"
 
 
 int setup_center_res() {
@@ -41,10 +42,14 @@ void child_enter_center() {
 	// wait if enter is blocked
 	sem_wait(_center_enter_sem_shm);
 	sem_post(_center_enter_sem_shm);
-
+	
 	if (sem_trywait(_center_sem_shm) == -1 && errno == EAGAIN){
-		output_write(MSG_WAITING);
-		sem_wait(_center_sem_shm);
+		debug("EAGAIN");
+		if (!all_adults_generated()) {
+			output_write(MSG_WAITING);
+			sem_wait(_center_sem_shm);
+		} else
+			debug("Unconditional enter");
 	}
 	output_write(MSG_ENTER);
 
@@ -122,10 +127,14 @@ void adult_leave_center() {
 
 
 void block_enter(bool block) {
-	if (block)
+	if (block){
+		debug("blocking enter");
 		sem_wait(_center_enter_sem_shm);
-	else
+	}
+	else {
+		debug("unblocking enter");
 		sem_post(_center_enter_sem_shm);
+	}
 }
 
 
