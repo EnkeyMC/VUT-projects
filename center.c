@@ -45,7 +45,7 @@ void child_enter_center() {
 	debug("trywait");
 	if (sem_trywait(_center_sem_shm) == -1 && errno == EAGAIN){
 		debug("EAGAIN");
-		if (!all_adults_generated() && get_adult_count() == 0) {
+		if (!(all_adults_generated() && get_adult_count() == 0)) {
 			output_write(MSG_WAITING);
 			debug("wait");
 			sem_wait(_center_sem_shm);

@@ -12,6 +12,7 @@
 #include "adult.h"
 #include "center.h"
 #include "output.h"
+#include "generators.h"
 
 int adult_work(int* args) {
 	int sleep_time = args[4];
@@ -27,6 +28,8 @@ int adult_work(int* args) {
 	}
 
 	adult_leave_center();
+
+	adult_generated();  // Notify generator that adult has been generated
 
 	return 0;
 }

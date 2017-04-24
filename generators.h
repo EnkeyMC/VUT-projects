@@ -16,9 +16,14 @@
 #define GENERATOR_COUNT 2
 
 /**
- * Indicator if all adults were generated
+ * Number of adults generated
  */
-bool* _adults_generated_shm;
+int* _adults_generated_shm;
+
+/**
+ * Number of adults to generate
+ */
+int* _adults_to_generate_shm;
 
 /**
  * Semaphore to access _adults_generated_shm
@@ -44,6 +49,11 @@ int setup_generators_res();
  * @return     Whether all adults are already genereated
  */
 bool all_adults_generated();
+
+/**
+ * @brief      Increment number of adults generated
+ */
+void adult_generated();
 
 /**
  * @brief      Create child and adult process generators.

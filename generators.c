@@ -16,9 +16,13 @@
 #include "debug.h"
 
 int setup_generators_res() {
-	if ((_adults_generated_shm = (bool*) create_shm(sizeof(bool))) == NULL)
+	if ((_adults_generated_shm = (int*) create_shm(sizeof(int))) == NULL)
 		return -1;
-	*_adults_generated_shm = false;
+	*_adults_generated_shm = 0;
+
+	if ((_adults_to_generate_shm = (int*) create_shm(sizeof(int))) == NULL)
+		return -1;
+	*_adults_to_generate_shm = -1;
 
 	if ((_gen_access_sem_shm = (sem_t*) create_shm(sizeof(sem_t))) == NULL)
 		return -1;
@@ -30,9 +34,17 @@ int setup_generators_res() {
 bool all_adults_generated() {
 	bool ret_val;
 	sem_wait(_gen_access_sem_shm);
-	ret_val = *_adults_generated_shm;
+	ret_val = (*_adults_generated_shm) == (*_adults_to_generate_shm);
 	sem_post(_gen_access_sem_shm);
 	return ret_val;
+}
+
+
+void adult_generated() {
+	debug("Adult generated");
+	sem_wait(_gen_access_sem_shm);
+	(*_adults_generated_shm)++;
+	sem_post(_gen_access_sem_shm);
 }
 
 
@@ -71,6 +83,9 @@ int generate(int* args) {
 
 	if (proc_info.type == P_ADULT_GEN) {
 		fork_count = args[0];
+		sem_wait(_gen_access_sem_shm);
+		*_adults_to_generate_shm = fork_count;
+		sem_post(_gen_access_sem_shm);
 		max_wait_time = args[2];
 	} else {
 		fork_count = args[1];
@@ -96,13 +111,6 @@ int generate(int* args) {
 		} else if (pid == -1) {
 			return -1;
 		}
-	}
-	
-	if (proc_info.type == P_ADULT_GEN) {
-		sem_wait(_gen_access_sem_shm);
-		debug("Adults generated");
-		*_adults_generated_shm = true;
-		sem_post(_gen_access_sem_shm);
 	}
 
 	for (int i = 0; i < fork_count; i++)
