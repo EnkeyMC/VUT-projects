@@ -87,6 +87,12 @@ int setup_resources() {
 		clean_shm();
 		return -1;
 	}
+
+	if (setup_generators_res() == -1) {
+		fprintf(stderr, SHM_ALLOC_ERR);
+		clean_shm();
+		return -1;
+	}
 	return 0;
 }
 

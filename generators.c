@@ -97,7 +97,7 @@ int generate(int* args) {
 			return -1;
 		}
 	}
-
+	
 	if (proc_info.type == P_ADULT_GEN) {
 		sem_wait(_gen_access_sem_shm);
 		debug("Adults generated");

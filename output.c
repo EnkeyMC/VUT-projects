@@ -50,6 +50,8 @@ int output_write(char* msg) {
 		return -1;
 	}
 
+	setvbuf(fp, NULL, _IONBF, 0);
+
 	if (strcmp(msg, MSG_WAITING) == 0)
 		fprintf(fp, "%d\t: %c %d\t: %s : %d : %d\n", (*_output_counter_shm)++, proc_info.type, 
 			proc_info.id, msg, get_adult_count(), get_child_count());

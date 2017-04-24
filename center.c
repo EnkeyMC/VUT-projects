@@ -42,11 +42,12 @@ void child_enter_center() {
 	// wait if enter is blocked
 	sem_wait(_center_enter_sem_shm);
 	sem_post(_center_enter_sem_shm);
-	
+	debug("trywait");
 	if (sem_trywait(_center_sem_shm) == -1 && errno == EAGAIN){
 		debug("EAGAIN");
-		if (!all_adults_generated()) {
+		if (!all_adults_generated() && get_adult_count() == 0) {
 			output_write(MSG_WAITING);
+			debug("wait");
 			sem_wait(_center_sem_shm);
 		} else
 			debug("Unconditional enter");
@@ -65,7 +66,7 @@ void child_leave_center() {
 	sem_post(_center_info_sem_shm);
 
 	output_write(MSG_LEAVE);
-
+	debug("post");
 	sem_post(_center_sem_shm);
 }
 
@@ -81,8 +82,10 @@ void adult_enter_center() {
 
 	output_write(MSG_ENTER);
 
-	for (int i = 0; i < CHILDREN_PER_ADULT; i++)
+	for (int i = 0; i < CHILDREN_PER_ADULT; i++) {
+		debug("post");
 		sem_post(_center_sem_shm);
+	}
 }
 
 
@@ -92,7 +95,7 @@ void adult_leave_center() {
 
 	int i;
 	for (i = 0; i < CHILDREN_PER_ADULT; i++) {
-		debug("Trying in loop");
+		debug("trywait");
 		if (sem_trywait(_center_sem_shm) == -1 && errno == EAGAIN) {
 			break;
 		}
@@ -102,7 +105,7 @@ void adult_leave_center() {
 	if (i != CHILDREN_PER_ADULT) {
 		debug("Gotta wait");
 		for (int j = 0; j < i; j++) {
-			debug("Unlocking");
+			debug("post");
 			sem_post(_center_sem_shm);
 		}
 
@@ -110,7 +113,7 @@ void adult_leave_center() {
 		block_enter(false);
 		// Wait again for children to leave
 		for (i = 0; i < CHILDREN_PER_ADULT; i++) {
-			debug("Waiting...");
+			debug("wait");
 			sem_wait(_center_sem_shm);
 		}
 
