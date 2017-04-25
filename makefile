@@ -5,7 +5,7 @@ CFLAGS=-std=gnu99 -Wall -Wextra -Werror -pedantic -g -DDEBUG
 LFLAGS=-pthread
 OBJ_DIR=obj
 ARGS=1 4 20 10 5 5
-DEADLOCKARG=20000
+DEADLOCKARG=10000
 
 SRCS=$(wildcard *.c)
 HEADERS=$(wildcard *.h)
@@ -43,4 +43,4 @@ valgrind-full: $(EXEC)
 	valgrind --leak-check=full --show-leak-kinds=all ./$(EXEC) $(ARGS)
 
 test-deadlock: $(EXEC)
-	./test-deadlock.sh $(DEADLOCKARG)
+	./test-deadlock.sh $(ARGS) $(DEADLOCKARG)

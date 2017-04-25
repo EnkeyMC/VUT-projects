@@ -14,6 +14,7 @@
 #include "process.h"
 #include "shared_mem.h"
 #include "debug.h"
+#include "center.h"
 
 int setup_generators_res() {
 	if ((_adults_generated_shm = (int*) create_shm(sizeof(int))) == NULL)
@@ -23,6 +24,10 @@ int setup_generators_res() {
 	if ((_adults_to_generate_shm = (int*) create_shm(sizeof(int))) == NULL)
 		return -1;
 	*_adults_to_generate_shm = -1;
+
+	if ((_childs_to_generate_shm = (int*) create_shm(sizeof(int))) == NULL)
+		return -1;
+	*_childs_to_generate_shm = -1;
 
 	if ((_gen_access_sem_shm = (sem_t*) create_shm(sizeof(sem_t))) == NULL)
 		return -1;
@@ -44,6 +49,13 @@ void adult_generated() {
 	debug("Adult generated");
 	sem_wait(_gen_access_sem_shm);
 	(*_adults_generated_shm)++;
+	// Open center semaphore to prevent deadlocks
+	if (*_adults_generated_shm == *_adults_to_generate_shm) {
+		for (int i = 0; i < *_childs_to_generate_shm; i++) {
+			debug("post");
+			sem_post(_center_sem_shm);
+		}
+	}
 	sem_post(_gen_access_sem_shm);
 }
 
@@ -89,6 +101,9 @@ int generate(int* args) {
 		max_wait_time = args[2];
 	} else {
 		fork_count = args[1];
+		sem_wait(_gen_access_sem_shm);
+		*_childs_to_generate_shm = fork_count;
+		sem_post(_gen_access_sem_shm);
 		max_wait_time = args[3];
 	}
 

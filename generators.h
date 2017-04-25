@@ -26,6 +26,11 @@ int* _adults_generated_shm;
 int* _adults_to_generate_shm;
 
 /**
+ * Number of childs to generate
+ */
+int* _childs_to_generate_shm;
+
+/**
  * Semaphore to access _adults_generated_shm
  */
 sem_t* _gen_access_sem_shm;
