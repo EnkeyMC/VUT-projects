@@ -35,9 +35,9 @@ int setup_debug_res() {
 		return -1;
 	*_debug_counter_shm = 1;
 
-	if ((_debug_sem_shm = (sem_t*) create_shm(sizeof(sem_t))) == NULL)
+	if ((_debug_sem_shm = create_shm(1)) == NULL)
 		return -1;
-	return sem_init(_debug_sem_shm, 1, 1);
+	return 0;
 
 #else
 	return 0;

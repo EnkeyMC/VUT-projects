@@ -19,22 +19,16 @@ int setup_center_res() {
 	if ((_center_shm = (center_t*) create_shm(sizeof(center_t))) == NULL)
 		return -1;
 
-	if ((_center_sem_shm = (sem_t*) create_shm(sizeof(sem_t))) == NULL)
+	if ((_center_sem_shm = create_sem(0)) == NULL)
 		return -1;
 
-	if (sem_init(_center_sem_shm, 1, 0) == -1)
+	if ((_center_enter_sem_shm = create_sem(1)) == NULL)
 		return -1;
 
-	if ((_center_enter_sem_shm = (sem_t*) create_shm(sizeof(sem_t))) == NULL)
+	if ((_center_info_sem_shm = create_sem(1)) == NULL)
 		return -1;
 
-	if (sem_init(_center_enter_sem_shm, 1, 1) == -1)
-		return -1;
-
-	if ((_center_info_sem_shm = (sem_t*) create_shm(sizeof(sem_t))) == NULL)
-		return -1;
-
-	return sem_init(_center_info_sem_shm, 1, 1);
+	return 0;
 }
 
 

@@ -58,10 +58,9 @@ int setup_proc_res() {
 		return -1;
 	*_child_id_shm = 1;
 
-	if ((_proc_sem_shm = (sem_t*) create_shm(sizeof(sem_t))) == NULL)
+	if ((_proc_sem_shm = create_sem(1)) == NULL)
 		return -1;
-
-	return sem_init(_proc_sem_shm, 1, 1);
+	return 0;
 }
 
 /* end of process.c */

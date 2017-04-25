@@ -4,7 +4,7 @@ CC=gcc
 CFLAGS=-std=gnu99 -Wall -Wextra -Werror -pedantic -g -DDEBUG
 LFLAGS=-pthread
 OBJ_DIR=obj
-ARGS=1 4 20 10 5 5
+ARGS=7 2 5 5 1 1
 DEADLOCKARG=10000
 
 SRCS=$(wildcard *.c)

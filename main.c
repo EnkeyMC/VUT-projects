@@ -29,9 +29,6 @@
 
 #define TIME_MAX 5000
 
-#define SHM_CLEAN_ERR "Error cleaning shared memory.\n"
-#define SHM_ALLOC_ERR "Error allocating memory.\n"
-
 /**
  * @brief      Check if arguments are in range
  *
@@ -65,31 +62,26 @@ bool check_args(int* args) {
 int setup_resources() {
 	// Allocate shared memory and create semaphores
 	if (setup_proc_res() == -1) {
-		fprintf(stderr, SHM_ALLOC_ERR);
 		clean_shm();
 		return -1;
 	}
 
 	if (setup_center_res() == -1) {
-		fprintf(stderr, SHM_ALLOC_ERR);
 		clean_shm();
 		return -1;
 	}
 
 	if (setup_output_res() == -1) {
-		fprintf(stderr, SHM_ALLOC_ERR);
 		clean_shm();
 		return -1;
 	}
 
 	if (setup_debug_res() == -1) {
-		fprintf(stderr, SHM_ALLOC_ERR);
 		clean_shm();
 		return -1;
 	}
 
 	if (setup_generators_res() == -1) {
-		fprintf(stderr, SHM_ALLOC_ERR);
 		clean_shm();
 		return -1;
 	}
@@ -130,19 +122,15 @@ int main(int argc, char const *argv[])
 	if (!check_args(arguments)) {
 		return EXIT_ARG_ERR;
 	}
-
+	
 	if (setup_resources() == -1) {
 		return EXIT_SYS_CALL_ERR;
 	}
-	
-	int ret_code = create_generators(&error_msg);
+
+	int ret_code = create_generators();
 	// Executers: P_MAIN, P_ADULT_GEN, P_CHILD_GEN
 	if (ret_code == -1) {
-		fprintf(stderr, "%s\n", error_msg);
-		if (clean_shm() == -1) {
-			fprintf(stderr, SHM_CLEAN_ERR);
-			return EXIT_SYS_CALL_ERR;
-		}
+		clean_shm();
 		return EXIT_SYS_CALL_ERR;
 	}
 
@@ -163,7 +151,6 @@ int main(int argc, char const *argv[])
 		}
 
 		if (clean_shm() == -1) {
-			fprintf(stderr, SHM_CLEAN_ERR);
 			return EXIT_SYS_CALL_ERR;
 		}
 	}

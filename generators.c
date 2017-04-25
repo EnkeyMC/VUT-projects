@@ -29,10 +29,10 @@ int setup_generators_res() {
 		return -1;
 	*_childs_to_generate_shm = -1;
 
-	if ((_gen_access_sem_shm = (sem_t*) create_shm(sizeof(sem_t))) == NULL)
+	if ((_gen_access_sem_shm = create_sem(1)) == NULL)
 		return -1;
 
-	return sem_init(_gen_access_sem_shm, 1, 1);
+	return 0;
 }
 
 
@@ -60,14 +60,14 @@ void adult_generated() {
 }
 
 
-int create_generators(char** error_msg) {
+int create_generators() {
 	pid_t pid = fork();  // Create adult generator
 
 	if (pid == 0) {  // Child process
 		set_proc_info(P_ADULT_GEN);
 		return 0;
 	} else if (pid == -1) {
-		sprintf(*error_msg, "Error creating adult generator process.");
+		perror("Error generating adult generator");
 		return -1;
 	} else {
 		_gen_pids[0] = pid;
@@ -79,7 +79,7 @@ int create_generators(char** error_msg) {
 		set_proc_info(P_CHILD_GEN);
 		return 0;
 	} else if (pid == -1) {
-		sprintf(*error_msg, "Error creating child generator process.");
+		perror("Error generating child generator");
 		return -1;
 	} else {
 		_gen_pids[1] = pid;
@@ -124,6 +124,7 @@ int generate(int* args) {
 			(*proc_info.p_work)(args);  // Call worker function
 			return 0;
 		} else if (pid == -1) {
+			perror("Error generating child or adult");
 			return -1;
 		}
 	}

@@ -63,11 +63,9 @@ void adult_generated();
 /**
  * @brief      Create child and adult process generators.
  *
- * @param      error_msg  The error message if error occures
- *
  * @return     0 on success, -1 on sys call errors
  */
-int create_generators(char** error_msg);
+int create_generators();
 
 /**
  * @brief      Generates child or adult processes based on process type. Worker
