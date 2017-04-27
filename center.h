@@ -28,12 +28,12 @@ typedef struct
 center_t* _center_shm;
 
 /**
- * Global semaphore in shared memory to access information about center
+ * Semaphore in shared memory to access information about center
  */
 sem_t* _center_info_sem_shm;
 
 /**
- * Global semaphore in shared memory to access center
+ * Semaphore in shared memory to access center
  */
 sem_t* _center_sem_shm;
 
@@ -41,6 +41,11 @@ sem_t* _center_sem_shm;
  * Semaphore to block entering to center
  */
 sem_t* _center_enter_sem_shm;
+
+/**
+ * Semaphore for creating transactional code
+ */
+sem_t* _center_transaction_sem_shm;
 
 /**
  * @brief      Allocates shared memory and creates semaphores

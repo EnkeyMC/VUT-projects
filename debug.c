@@ -35,7 +35,7 @@ int setup_debug_res() {
 		return -1;
 	*_debug_counter_shm = 1;
 
-	if ((_debug_sem_shm = create_shm(1)) == NULL)
+	if ((_debug_sem_shm = create_sem(1)) == NULL)
 		return -1;
 	return 0;
 
@@ -48,7 +48,7 @@ int debug(const char* msg) {
 
 #ifdef DEBUG
 	sem_wait(_debug_sem_shm);
-
+	
 	FILE* fp = fopen(DEBUG_FILE, "a");
 
 	if (fp == NULL) {

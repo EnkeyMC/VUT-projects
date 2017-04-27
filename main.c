@@ -136,7 +136,7 @@ int main(int argc, char const *argv[])
 
 	// Start generating
 	if (proc_info.p_work != NULL) {
-		ret_code = (*proc_info.p_work)(arguments);
+		ret_code = proc_info.p_work(arguments);
 		// Executers: P_ADULT_GEN, P_CHILD_GEN, P_ADULT, P_CHILD
 		if (ret_code == -1) {
 			fprintf(stderr, "Error generating child and adult processes.\n");

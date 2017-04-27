@@ -31,6 +31,21 @@ int* _adults_to_generate_shm;
 int* _childs_to_generate_shm;
 
 /**
+ * Number of finished processes (adults and childs)
+ */
+int* _finished_proc_count_shm;
+
+/**
+ * Semaphore to notify generator process, used to synchronize finishing adults and childs
+ */
+sem_t* gen_notify_sem_shm;
+
+/**
+ * Semaphore to let all childs and adults to finish at once
+ */
+sem_t* gen_let_finish_sem_shm;
+
+/**
  * Semaphore to access _adults_generated_shm
  */
 sem_t* _gen_access_sem_shm;
@@ -59,6 +74,18 @@ bool all_adults_generated();
  * @brief      Increment number of adults generated
  */
 void adult_generated();
+
+/**
+ * @brief      Increment number of finished processes
+ */
+void proc_finished();
+
+/**
+ * @brief      Whether all processes (childs and adults) are ready to finish or finished
+ *
+ * @return     true, false
+ */
+bool all_proc_finished();
 
 /**
  * @brief      Create child and adult process generators.
