@@ -36,57 +36,40 @@ int setup_center_res() {
 
 
 void child_enter_center() {
-	// wait if enter is blocked
 	block_enter(true);
+	block_enter(false);
 
-	debug("trywait");
-	if (sem_trywait(_center_sem_shm) == -1 && errno == EAGAIN){
-		debug("EAGAIN");
-		if (!(all_adults_generated() && get_adult_count() == 0)) {
-			output_write(MSG_WAITING);
-			block_enter(false);
-			sem_wait(_center_sem_shm);
-			//block_enter(true);
-		}
+	if (get_child_count() > 3 * get_adult_count()) {
+		output_write(MSG_WAITING);
+		sem_wait(_center_sem_shm);
+		output_write(MSG_ENTER);
+	} else {
+		sem_wait(_center_sem_shm);
+		output_write(MSG_ENTER);
 	}
-
-	/*sem_wait(_center_info_sem_shm);
-	_center_shm->nchild++;
-	sem_post(_center_info_sem_shm);*/
-	output_write(MSG_ENTER);
-
-	//block_enter(false);
 }
 
 
 void child_leave_center() {
-	/*block_enter(true);
-	sem_wait(_center_info_sem_shm);
-	_center_shm->nchild--;
-	sem_post(_center_info_sem_shm);*/
-	output_write(MSG_LEAVE);
-
-	debug("post");
 	sem_post(_center_sem_shm);
-	//block_enter(false);
+	output_write(MSG_LEAVE);
 }
 
 
 void adult_enter_center() {
-	// wait if entering is blocked
 	block_enter(true);
+	block_enter(false);
 
 	sem_wait(_center_info_sem_shm);
 	_center_shm->nadult++;
 	sem_post(_center_info_sem_shm);
-	output_write(MSG_ENTER);
 
-
-	for (int i = 0; i < CHILDREN_PER_ADULT; i++) {
-		debug("post");
+	for (int i = 0; i < CHILDREN_PER_ADULT; ++i)
+	{
 		sem_post(_center_sem_shm);
 	}
-	block_enter(false);
+
+	output_write(MSG_ENTER);
 }
 
 
@@ -94,32 +77,31 @@ void adult_leave_center() {
 	block_enter(true);
 	output_write(MSG_TRYING);
 
-	int i;
-	sem_getvalue(_center_sem_shm, &i);
-	debugf("%d", i);
-	for (i = 0; i < CHILDREN_PER_ADULT; i++) {
-		debug("trywait");
-		if (sem_trywait(_center_sem_shm) == -1 && errno == EAGAIN) {
-			break;
-		}
-	}
-	debug("Tried");
-	if (i != CHILDREN_PER_ADULT) {
+	if (get_child_count() > 3 * (get_adult_count() - 1)) {
 		output_write(MSG_WAITING);
+
 		block_enter(false);
-		// Wait for children to leave
-		for (int j = i; j < CHILDREN_PER_ADULT; j++) {
-			debug("wait");
+		sem_wait(_center_info_sem_shm);
+		for (int i = 0; i < CHILDREN_PER_ADULT; ++i)
+		{
 			sem_wait(_center_sem_shm);
 		}
-		block_enter(true);
-	}
-	output_write(MSG_LEAVE);
 
-	sem_wait(_center_info_sem_shm);
-	_center_shm->nadult--;
-	sem_post(_center_info_sem_shm);
-	block_enter(false);
+		_center_shm->nadult--;
+		sem_post(_center_info_sem_shm);
+		output_write(MSG_LEAVE);
+	} else {
+		sem_wait(_center_info_sem_shm);
+		for (int i = 0; i < CHILDREN_PER_ADULT; ++i)
+		{
+			sem_wait(_center_sem_shm);
+		}
+
+		_center_shm->nadult--;
+		sem_post(_center_info_sem_shm);
+		output_write(MSG_LEAVE);
+		block_enter(false);
+	}
 }
 
 

@@ -1,7 +1,7 @@
 PROJECT=IOS_project_2
 EXEC=proj2
 CC=gcc
-CFLAGS=-std=gnu99 -Wall -Wextra -Werror -pedantic -g -DDEBUG
+CFLAGS=-std=gnu99 -Wall -Wextra -Werror -pedantic -g
 LFLAGS=-pthread
 OBJ_DIR=obj
 ARGS=2 4 1 1 0 0
