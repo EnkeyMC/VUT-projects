@@ -36,62 +36,46 @@ int setup_center_res() {
 
 
 void child_enter_center() {
-	// wait for transactions
-	sem_wait(_center_transaction_sem_shm);
-	sem_post(_center_transaction_sem_shm);
-
 	// wait if enter is blocked
-	sem_wait(_center_enter_sem_shm);
-	sem_post(_center_enter_sem_shm);
 	block_enter(true);
+
 	debug("trywait");
 	if (sem_trywait(_center_sem_shm) == -1 && errno == EAGAIN){
 		debug("EAGAIN");
 		if (!(all_adults_generated() && get_adult_count() == 0)) {
 			output_write(MSG_WAITING);
 			block_enter(false);
-			debug("wait");
 			sem_wait(_center_sem_shm);
-		} else {
-			block_enter(false);
-			debug("Unconditional enter");
+			block_enter(true);
 		}
-	} else {
-		block_enter(false);
 	}
-	sem_wait(_center_transaction_sem_shm);
-	output_write(MSG_ENTER);
 
 	sem_wait(_center_info_sem_shm);
 	_center_shm->nchild++;
 	sem_post(_center_info_sem_shm);
-	sem_post(_center_transaction_sem_shm);
+	output_write(MSG_ENTER);
+
+	block_enter(false);
 }
 
 
 void child_leave_center() {
-	sem_wait(_center_transaction_sem_shm);
+	block_enter(true);
 	sem_wait(_center_info_sem_shm);
 	_center_shm->nchild--;
 	sem_post(_center_info_sem_shm);
 	output_write(MSG_LEAVE);
-	sem_post(_center_transaction_sem_shm);
 
 	debug("post");
 	sem_post(_center_sem_shm);
+	block_enter(false);
 }
 
 
 void adult_enter_center() {
-	// wait for transactions
-	sem_wait(_center_transaction_sem_shm);
-	sem_post(_center_transaction_sem_shm);
-
 	// wait if entering is blocked
-	sem_wait(_center_enter_sem_shm);
-	sem_post(_center_enter_sem_shm);
+	block_enter(true);
 
-	sem_wait(_center_transaction_sem_shm);
 	sem_wait(_center_info_sem_shm);
 	_center_shm->nadult++;
 	sem_post(_center_info_sem_shm);
@@ -102,7 +86,7 @@ void adult_enter_center() {
 		debug("post");
 		sem_post(_center_sem_shm);
 	}
-	sem_post(_center_transaction_sem_shm);
+	block_enter(false);
 }
 
 
@@ -111,6 +95,8 @@ void adult_leave_center() {
 	output_write(MSG_TRYING);
 
 	int i;
+	sem_getvalue(_center_sem_shm, &i);
+	debugf("%d", i);
 	for (i = 0; i < CHILDREN_PER_ADULT; i++) {
 		debug("trywait");
 		if (sem_trywait(_center_sem_shm) == -1 && errno == EAGAIN) {
@@ -118,31 +104,22 @@ void adult_leave_center() {
 		}
 	}
 	debug("Tried");
-	// If adult cannot leave, increment semaphore back
 	if (i != CHILDREN_PER_ADULT) {
-		debug("Gotta wait");
-		for (int j = 0; j < i; j++) {
-			debug("post");
-			sem_post(_center_sem_shm);
-		}
-
 		output_write(MSG_WAITING);
 		block_enter(false);
-		// Wait again for children to leave
-		for (i = 0; i < CHILDREN_PER_ADULT; i++) {
+		// Wait for children to leave
+		for (int j = i; j < CHILDREN_PER_ADULT; j++) {
 			debug("wait");
 			sem_wait(_center_sem_shm);
 		}
-
-		output_write(MSG_LEAVE);
-	} else {
-		output_write(MSG_LEAVE);
-		block_enter(false);
+		block_enter(true);
 	}
+	output_write(MSG_LEAVE);
 
 	sem_wait(_center_info_sem_shm);
 	_center_shm->nadult--;
 	sem_post(_center_info_sem_shm);
+	block_enter(false);
 }
 
 
@@ -150,6 +127,7 @@ void block_enter(bool block) {
 	if (block){
 		debug("blocking enter");
 		sem_wait(_center_enter_sem_shm);
+		debug("entered");
 	}
 	else {
 		debug("unblocking enter");

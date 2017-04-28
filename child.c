@@ -33,8 +33,9 @@ int child_work(int* args) {
 
 	// Let generators know you are ready to finish
 	proc_finished(); 
-	debug("Notifying generator");
-	sem_post(gen_notify_sem_shm);
+	// If this process is last to finish, notify generator
+	if (all_proc_finished())
+		sem_post(gen_notify_sem_shm);
 	// Wait till you can leave
 	sem_wait(gen_let_finish_sem_shm);
 	// Finish

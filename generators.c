@@ -73,7 +73,6 @@ void proc_finished() {
 bool all_proc_finished() {
 	bool ret_val;
 	sem_wait(_gen_access_sem_shm);
-	debugf("%d == %d + %d", *_finished_proc_count_shm, *_adults_to_generate_shm, *_childs_to_generate_shm);	
 	ret_val = *_finished_proc_count_shm == *_adults_to_generate_shm + *_childs_to_generate_shm;
 	sem_post(_gen_access_sem_shm);
 	return ret_val;
@@ -153,10 +152,7 @@ int generate(int* args) {
 	if (proc_info.type == P_ADULT_GEN) { // Only 1 generator will synchronize finishing
 		// wait till all processes finish
 		debug("Waiting for generated processes");
-		while (!all_proc_finished()) {
-			debug("Waiting for notification");
-			sem_wait(gen_notify_sem_shm);
-		}
+		sem_wait(gen_notify_sem_shm);
 
 		sem_wait(_gen_access_sem_shm);
 		int nforks = *_adults_to_generate_shm + *_childs_to_generate_shm; // Number of all processes generated
