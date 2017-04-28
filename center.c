@@ -46,29 +46,29 @@ void child_enter_center() {
 			output_write(MSG_WAITING);
 			block_enter(false);
 			sem_wait(_center_sem_shm);
-			block_enter(true);
+			//block_enter(true);
 		}
 	}
 
-	sem_wait(_center_info_sem_shm);
+	/*sem_wait(_center_info_sem_shm);
 	_center_shm->nchild++;
-	sem_post(_center_info_sem_shm);
+	sem_post(_center_info_sem_shm);*/
 	output_write(MSG_ENTER);
 
-	block_enter(false);
+	//block_enter(false);
 }
 
 
 void child_leave_center() {
-	block_enter(true);
+	/*block_enter(true);
 	sem_wait(_center_info_sem_shm);
 	_center_shm->nchild--;
-	sem_post(_center_info_sem_shm);
+	sem_post(_center_info_sem_shm);*/
 	output_write(MSG_LEAVE);
 
 	debug("post");
 	sem_post(_center_sem_shm);
-	block_enter(false);
+	//block_enter(false);
 }
 
 
@@ -147,9 +147,9 @@ int get_adult_count() {
 
 int get_child_count() {
 	int count;
-	sem_wait(_center_info_sem_shm);
-	count = _center_shm->nchild;
-	sem_post(_center_info_sem_shm);
+	sem_getvalue(_center_sem_shm, &count);
+	count = get_adult_count() * 3 - count;
+	count = count < 0 ? 0 : count;
 	return count;
 }
 
