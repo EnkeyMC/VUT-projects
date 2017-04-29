@@ -1,14 +1,14 @@
 HOST=merlin.fit.vutbr.cz
 USER=xomach00
-FILENAME=proj3
+FILENAME=proj5
 HOST_MAKE=makefile-merlin
-DIRECTORY=ITY_project_3
+DIRECTORY=ITY_project_5
 SSH_COMMAND="cd $(DIRECTORY) && make"
 SSH_COMMAND_CLEAN="cd $(DIRECTORY) && make clean"
 EPS=$(wildcard *.eps)
 ZIP_NAME=xomach00-fit.zip
 
-convert: copy-tex copy-eps copy-makefile 
+convert: copy-tex copy-makefile 
 	ssh $(USER)@$(HOST) $(SSH_COMMAND)
 	scp $(USER)@$(HOST):~/$(DIRECTORY)/$(FILENAME).pdf ./$(FILENAME).pdf
 
