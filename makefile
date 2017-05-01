@@ -1,10 +1,10 @@
 PROJECT=IOS_project_2
 EXEC=proj2
 CC=gcc
-CFLAGS=-std=gnu99 -Wall -Wextra -Werror -pedantic -g
+CFLAGS=-std=gnu99 -Wall -Wextra -Werror -pedantic -g -DDEBUG
 LFLAGS=-pthread
 OBJ_DIR=obj
-ARGS=2 4 1 1 0 0
+ARGS=2 7 0 0 0 0
 DEADLOCKARG=10000
 
 SRCS=$(wildcard *.c)
@@ -16,7 +16,7 @@ all: $(EXEC)
 $(EXEC): $(OBJS)
 	$(CC) $(CFLAGS) -o $@ $^ $(LFLAGS)
 
-$(OBJ_DIR)/%.o: %.c
+$(OBJ_DIR)/%.o: %.c $(HEADERS)
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) -c $< -o $@
 

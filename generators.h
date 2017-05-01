@@ -36,6 +36,11 @@ int* _childs_to_generate_shm;
 int* _finished_proc_count_shm;
 
 /**
+ * Number of generators ready to generate
+ */
+int* _gen_ready_shm;
+
+/**
  * Semaphore to notify generator process, used to synchronize finishing adults and childs
  */
 sem_t* gen_notify_sem_shm;
@@ -49,6 +54,12 @@ sem_t* gen_let_finish_sem_shm;
  * Semaphore to access _adults_generated_shm
  */
 sem_t* _gen_access_sem_shm;
+
+/**
+ * Semaphore to synchronize generators at the start of generating. 
+ * Only to prevent deadlock because of uninitialized variables.
+ */
+sem_t* gen_sync_sem_shm;
 
 /**
  * Array of generator process IDs. Filled after calling create_generators().

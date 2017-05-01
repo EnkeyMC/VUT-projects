@@ -55,4 +55,11 @@ bool is_in_range(const int value, const int min, const int max) {
 }
 
 
+int get_sem_val(sem_t* sem) {
+	int ret_val;
+	sem_getvalue(sem, &ret_val);
+	return ret_val;
+}
+
+
 /* end of utils.c */

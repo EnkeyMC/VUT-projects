@@ -10,6 +10,7 @@
 #define UTILS_H
 
 #include <stdbool.h>
+#include <semaphore.h>
 
 /**
  * @brief      Parse integer arguments
@@ -36,6 +37,15 @@ int parse_args(const int argc, const char* const argv[],
  * @return     True if in range, False otherwise.
  */
 bool is_in_range(const int value, const int min, const int max);
+
+/**
+ * @brief      Simple wrapper to ge semaphore value
+ *
+ * @param      sem   The semaphore
+ *
+ * @return     The semaphore value.
+ */
+int get_sem_val(sem_t* sem);
 
 #endif // UTILS_H
 /* end of utils.h */

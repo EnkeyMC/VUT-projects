@@ -5,7 +5,6 @@
  * @email 		xomach00@stud.fit.vutbr.cz
  * @date    	16.4.2017
  */
-#include <stdio.h>
 #include <string.h>
 
 #include "output.h"
@@ -16,18 +15,15 @@
 
 
 int setup_output_res() {
-	// Clear output file
-	FILE* fp = fopen(FILENAME, "w");
+	// Open output file
+	_fp = fopen(FILENAME, "w");
 
-	if (fp == NULL) {
-		fprintf(stderr, "Could not open file '%s'!\n", FILENAME);
+	if (_fp == NULL) {
+		perror("Error opening output file");
 		return -1;
 	}
 
-	if (fclose(fp) == EOF) {
-		fprintf(stderr, "Could not close file '%s'!\n", FILENAME);
-		return -1;
-	}
+	setvbuf(_fp, NULL, _IONBF, 0); // Set buffer to no buffer
 
 	if ((_output_counter_shm = (int*) create_shm(sizeof(int))) == NULL) 
 		return -1;
@@ -39,32 +35,31 @@ int setup_output_res() {
 }
 
 
-int output_write(char* msg) {
-	debug(msg);
+int output_close_file() {
+	if (fclose(_fp) == EOF) {
+		perror("Error closing output file");
+		return -1;
+	}
+	return 0;
+}
+
+
+void output_write(char* msg) {
 	sem_wait(_output_access_sem_shm);
 
-	FILE* fp = fopen(FILENAME, "a");
-
-	if (fp == NULL) {
-		fprintf(stderr, "Could not open file '%s'!\n", FILENAME);
-		return -1;
-	}
-
-	setvbuf(fp, NULL, _IONBF, 0);
-
-	if (strcmp(msg, MSG_WAITING) == 0)
-		fprintf(fp, "%d\t: %c %d\t: %s : %d : %d\n", (*_output_counter_shm)++, proc_info.type, 
-			proc_info.id, msg, get_adult_count(), get_child_count());
-	else
-		fprintf(fp, "%d\t: %c %d\t: %s\n", (*_output_counter_shm)++, proc_info.type, proc_info.id, msg);
-
-	if (fclose(fp) == EOF) {
-		fprintf(stderr, "Could not close file '%s'!\n", FILENAME);
-		return -1;
-	}
+	fprintf(_fp, "%d\t: %c %d\t: %s\n", (*_output_counter_shm)++, proc_info.type, proc_info.id, msg);
 
 	sem_post(_output_access_sem_shm);
-	return 0;
+}
+
+
+void output_write_c(char* msg, int adults, int children) {
+	sem_wait(_output_access_sem_shm);
+
+	fprintf(_fp, "%d\t: %c %d\t: %s : %d : %d\n", (*_output_counter_shm)++, proc_info.type, 
+			proc_info.id, msg, adults, children);
+
+	sem_post(_output_access_sem_shm);
 }
 
 /* end of output.c */

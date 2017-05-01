@@ -33,6 +33,10 @@ int setup_generators_res() {
 		return -1;
 	*_finished_proc_count_shm = 0;
 
+	if ((_gen_ready_shm = (int*) create_shm(sizeof(int))) == NULL)
+		return -1;
+	*_gen_ready_shm = 0;
+
 	if ((_gen_access_sem_shm = create_sem(1)) == NULL)
 		return -1;
 
@@ -40,6 +44,9 @@ int setup_generators_res() {
 		return -1;
 
 	if ((gen_let_finish_sem_shm = create_sem(0)) == NULL)
+		return -1;
+
+	if ((gen_sync_sem_shm = create_sem(0)) == NULL)
 		return -1;
 
 	return 0;
@@ -80,7 +87,6 @@ bool all_proc_finished() {
 
 
 int create_generators() {
-	debugs("Creating generators");
 	pid_t pid = fork();  // Create adult generator
 
 	if (pid == 0) {  // Child process
@@ -104,7 +110,6 @@ int create_generators() {
 	} else {
 		_gen_pids[1] = pid;
 	}
-	debugs("Generated");
 	return 0;
 }
 
@@ -112,7 +117,6 @@ int create_generators() {
 int generate(int* args) {
 	int fork_count;  // Amount of childs or adults to generate
 	int max_wait_time;  // Max time (in miliseconds) to wait between generating
-	debugs("Generating");
 	if (proc_info.type == P_ADULT_GEN) {
 		fork_count = args[0];
 		sem_wait(_gen_access_sem_shm);
@@ -127,12 +131,26 @@ int generate(int* args) {
 		max_wait_time = args[3];
 	}
 
+	// Synchronize generators to avoid errors and deadlocks
+	sem_wait(_gen_access_sem_shm);
+	(*_gen_ready_shm)++;
+
+	if (*_gen_ready_shm == GENERATOR_COUNT) {
+		sem_post(gen_notify_sem_shm); // Notify P_MAIN
+	}
+	sem_post(_gen_access_sem_shm);
+	// Wait for other generators
+	sem_wait(gen_sync_sem_shm);
+
+
 	srand(clock() * getpid());  // Start random generator
 
 	for (int i = 0; i < fork_count; i++) {
-		if (max_wait_time != 0)
-			usleep(rand() % (max_wait_time * 1000));  // Sleep for random time
-		debugs("Generating...");
+		if (max_wait_time != 0) {
+			int sleep_time = rand() % (max_wait_time * 1000);
+			debugf("%d", sleep_time);
+			usleep(sleep_time);  // Sleep for random time
+		}
 		pid_t pid = fork();
 
 		if (pid == 0) {

@@ -135,12 +135,17 @@ int main(int argc, char const *argv[])
 	}
 
 	// Start generating
-	if (proc_info.p_work != NULL) {
+	if (proc_info.type != P_MAIN) {
 		ret_code = proc_info.p_work(arguments);
 		// Executers: P_ADULT_GEN, P_CHILD_GEN, P_ADULT, P_CHILD
 		if (ret_code == -1) {
-			fprintf(stderr, "Error generating child and adult processes.\n");
 			return EXIT_SYS_CALL_ERR;
+		}
+	} else {
+		sem_wait(gen_notify_sem_shm); // Wait for notification from last generator
+		for (int i = 0; i < GENERATOR_COUNT; ++i)
+		{
+			sem_post(gen_sync_sem_shm);
 		}
 	}
 
@@ -155,7 +160,7 @@ int main(int argc, char const *argv[])
 		}
 	}
 
-	printf("%c%d: exited\n", proc_info.type, proc_info.id);
+	debugf("%c%d: exited", proc_info.type, proc_info.id);
 
 	return EXIT_SUCCESS;
 } // main()

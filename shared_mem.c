@@ -14,6 +14,7 @@
 #include <stdio.h>
 
 #include "shared_mem.h"
+#include "output.h"
 
 
 void* create_shm(size_t size) {
@@ -79,6 +80,14 @@ int clean_shm() {
 		free(_shm_addrs);
 	_shm_addrs = NULL;
 	_shm_addrs_len = 0;
+
+	if (_sem_addrs != NULL)
+		free(_sem_addrs);
+	_sem_addrs = NULL;
+	_sem_addrs_len = 0;
+
+	if (output_close_file() == -1)
+		ret_code = -1;
 
 	return ret_code;
 }

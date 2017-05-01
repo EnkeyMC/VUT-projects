@@ -13,6 +13,7 @@
 #include "output.h"
 #include "debug.h"
 #include "generators.h"
+#include "utils.h"
 
 
 int setup_center_res() {
@@ -37,15 +38,22 @@ int setup_center_res() {
 
 void child_enter_center() {
 	block_enter(true);
-	block_enter(false);
 
-	if (get_child_count() > 3 * get_adult_count()) {
-		output_write(MSG_WAITING);
+	int childc = get_child_count();
+	int adultc = get_adult_count();
+	if (childc + 1 > 3 * adultc && 
+		!(all_adults_generated() && adultc == 0)) 
+	{
+		output_write_c(MSG_WAITING, adultc, childc);
+		block_enter(false);
 		sem_wait(_center_sem_shm);
+		block_enter(true);
 		output_write(MSG_ENTER);
+		block_enter(false);
 	} else {
 		sem_wait(_center_sem_shm);
 		output_write(MSG_ENTER);
+		block_enter(false);
 	}
 }
 
@@ -63,13 +71,12 @@ void adult_enter_center() {
 	sem_wait(_center_info_sem_shm);
 	_center_shm->nadult++;
 	sem_post(_center_info_sem_shm);
+	output_write(MSG_ENTER);
 
 	for (int i = 0; i < CHILDREN_PER_ADULT; ++i)
 	{
 		sem_post(_center_sem_shm);
 	}
-
-	output_write(MSG_ENTER);
 }
 
 
@@ -77,26 +84,28 @@ void adult_leave_center() {
 	block_enter(true);
 	output_write(MSG_TRYING);
 
-	if (get_child_count() > 3 * (get_adult_count() - 1)) {
-		output_write(MSG_WAITING);
+	int childc = get_child_count();
+	int adultc = get_adult_count();
+	if (childc > 3 * (adultc - 1)) {
+		output_write_c(MSG_WAITING, adultc, childc);
 
 		block_enter(false);
-		sem_wait(_center_info_sem_shm);
 		for (int i = 0; i < CHILDREN_PER_ADULT; ++i)
 		{
 			sem_wait(_center_sem_shm);
 		}
 
+		sem_wait(_center_info_sem_shm);
 		_center_shm->nadult--;
 		sem_post(_center_info_sem_shm);
 		output_write(MSG_LEAVE);
 	} else {
-		sem_wait(_center_info_sem_shm);
 		for (int i = 0; i < CHILDREN_PER_ADULT; ++i)
 		{
 			sem_wait(_center_sem_shm);
 		}
 
+		sem_wait(_center_info_sem_shm);
 		_center_shm->nadult--;
 		sem_post(_center_info_sem_shm);
 		output_write(MSG_LEAVE);
@@ -128,8 +137,7 @@ int get_adult_count() {
 
 
 int get_child_count() {
-	int count;
-	sem_getvalue(_center_sem_shm, &count);
+	int count = get_sem_val(_center_sem_shm);
 	count = get_adult_count() * 3 - count;
 	count = count < 0 ? 0 : count;
 	return count;
