@@ -4,7 +4,7 @@ all: $(FILE).ps
 	ps2pdf $<
 
 $(FILE).ps: $(FILE).dvi
-	dvips -t a4 $<
+	dvips $<
 
 $(FILE).dvi: $(FILE).tex
 	latex $<

@@ -6,7 +6,7 @@ all: $(FILE).ps
 	$(PS2PDFBIN)/ps2pdf $<
 
 $(FILE).ps: $(FILE).dvi
-	$(BIN)/dvips -t a4 $<
+	$(BIN)/dvips $<
 
 $(FILE).dvi: $(FILE).tex
 	$(BIN)/latex $<
