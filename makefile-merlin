@@ -2,15 +2,9 @@ FILE = proj5
 BIN = /usr/local/share/texlive/bin
 PS2PDFBIN = /usr/bin
 
-all: $(FILE).ps
-	$(PS2PDFBIN)/ps2pdf $<
-
-$(FILE).ps: $(FILE).dvi
-	$(BIN)/dvips $<
-
-$(FILE).dvi: $(FILE).tex
-	$(BIN)/latex $<
-	$(BIN)/latex $<
+all: $(FILE).tex
+	$(BIN)/pdflatex $<
+	$(BIN)/pdflatex $<
 
 clean:
 	rm $(FILE).dvi

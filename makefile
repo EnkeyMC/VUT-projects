@@ -6,10 +6,12 @@ DIRECTORY=ITY_project_5
 SSH_COMMAND="cd $(DIRECTORY) && make"
 SSH_COMMAND_CLEAN="cd $(DIRECTORY) && make clean"
 EPS=$(wildcard *.eps)
+JPG=$(wildcard *.jpg)
+PNG=$(wildcard *.png)
 STY=$(wildcard *.sty)
 ZIP_NAME=xomach00-fit.zip
 
-convert: copy-tex copy-makefile copy-sty
+convert: copy-tex copy-makefile copy-sty copy-jpg copy-png
 	ssh $(USER)@$(HOST) $(SSH_COMMAND)
 	scp $(USER)@$(HOST):~/$(DIRECTORY)/$(FILENAME).pdf ./$(FILENAME).pdf
 
@@ -20,6 +22,12 @@ copy-eps: $(EPS)
 	scp $(EPS) $(USER)@$(HOST):~/$(DIRECTORY)/
 
 copy-sty: $(STY)
+	scp $^ $(USER)@$(HOST):~/$(DIRECTORY)/
+
+copy-jpg: $(JPG)
+	scp $^ $(USER)@$(HOST):~/$(DIRECTORY)/
+
+copy-png: $(PNG)
 	scp $^ $(USER)@$(HOST):~/$(DIRECTORY)/
 
 copy-makefile: $(HOST_MAKE)
@@ -37,7 +45,7 @@ clean:
 create-directory:
 	ssh $(USER)@$(HOST) "mkdir $(DIRECTORY)"
 
-pack: $(FILENAME).tex makefile $(EPS)
+pack: $(FILENAME).tex makefile $(JPG) $(PNG) $(STY)
 	mv makefile makefile_
 	mv makefile-odevzdani makefile
 	zip $(ZIP_NAME) $+
