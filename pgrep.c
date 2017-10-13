@@ -1,15 +1,15 @@
 #include <stdio.h>
-#include<unistd.h>
-#include<thread>
-#include<queue>
-#include<mutex>
-#include<vector>
+#include <unistd.h>
+#include <thread>
+#include <queue>
+#include <mutex>
+#include <vector>
 #include <iostream>
-#include<string.h>
+#include <string.h>
 
 
 
-std::vector<std::mutex *> zamky; /* pole zamku promenne velikosti */
+std::vector<std::mutex *> locks; /* pole zamku promenne velikosti */
 
 char *line;
 
@@ -36,23 +36,23 @@ int main() {
 	 * Inicializace threadu a zamku
 	 * *****************************/
 	int num=10;
-	int num_zamky=15;
+	int num_locks=15;
 	std::vector <std::thread *> threads; /* pole threadu promenne velikosti */
 
 	/* vytvorime zamky */
-	zamky.resize(num_zamky); /* nastavime si velikost pole zamky */
-	for(int i=0;i<num_zamky;i++){	
-		std::mutex *new_zamek = new std::mutex();
-		zamky[i]=new_zamek;
+	locks.resize(num_locks); /* nastavime si velikost pole zamky */
+	for(int i=0;i<num_locks;i++){
+		std::mutex *new_lock = new std::mutex();
+		locks[i] = new_lock;
 		/* Pokud je treba, tak vytvoreny zamek muzeme rovnou zamknout */
-		(*(zamky[i])).lock();
+		(*(locks[i])).lock();
 	}
 
 	/* vytvorime thready */
 	threads.resize(num); /* nastavime si velikost pole threads */
 	for(int i=0;i<num;i++){	
 		std::thread *new_thread = new std::thread (f,i);
-		threads[i]=new_thread;
+		threads[i] = new_thread;
 	}
 	/**********************************
 	 * Vlastni vypocet pgrep
@@ -76,8 +76,8 @@ int main() {
 		delete threads[i];
 	}
 	/* uvolnime pamet zamku */
-	for(int i=0;i<num_zamky;i++){
-		delete zamky[i];
+	for(int i=0;i<num_locks;i++){
+		delete locks[i];
 	}
 
 	printf("everything finished\n");

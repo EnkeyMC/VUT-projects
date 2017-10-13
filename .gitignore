@@ -78,7 +78,6 @@ CMakeCache.txt
 CMakeFiles
 CMakeScripts
 Testing
-Makefile
 cmake_install.cmake
 install_manifest.txt
 compile_commands.json
@@ -466,5 +465,8 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+cmake-build-debug/
+.idea/
 
 # End of https://www.gitignore.io/api/jetbrains,c,c++,java,python,latex,cmake
