@@ -17,6 +17,7 @@ std::vector<std::mutex *> read_locks; /* pole zamku promenne velikosti */
 char *line;
 long int line_score;
 int read_cnt;
+int result;
 std::mutex *line_score_lock;
 std::mutex *read_cnt_lock;
 std::mutex *main_lock;
@@ -43,6 +44,11 @@ void re_pattern_check(int ID, char* pattern, long int score) {
     do {
         debug("%d - Waiting for line", ID);
         read_locks[ID]->lock();  // Wait for main to give control
+
+        if (!result) {
+            break;
+        }
+
         debug("%d - Matching regex", ID);
         if (std::regex_match(line, re)) {
             debug("%d - Line matches %s", ID, pattern);
@@ -95,6 +101,7 @@ int main(int argv, char* args[]) {
     line_score_lock = new std::mutex();
     read_cnt_lock = new std::mutex();
     main_lock = new std::mutex();
+    main_lock->lock();
 
     std::vector <std::thread *> threads; /* pole threadu promenne velikosti */
     /* vytvorime thready */
@@ -106,10 +113,9 @@ int main(int argv, char* args[]) {
 	/**********************************
 	 * Vlastni vypocet pgrep
 	 * ********************************/
-	int res;
-	line=read_line(&res);
+	line=read_line(&result);
 
-	while (res) {
+	while (result) {
         read_cnt = re_num;
         for (int i = 0; i < re_num; i++) {
             read_locks[i]->unlock();
@@ -118,14 +124,14 @@ int main(int argv, char* args[]) {
 
         if (line_score >= min_score)
 		    printf("%s\n",line);
+        line_score = 0;
 		free(line); /* uvolnim pamet */
-		line=read_line(&res);
+		line=read_line(&result);
 	}
 
     for (int i = 0; i < re_num; i++) {
         read_locks[i]->unlock();
     }
-
 
 	/**********************************
 	 * Uvolneni pameti
