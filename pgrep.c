@@ -1,15 +1,12 @@
-#include <stdio.h>
-#include <unistd.h>
+#include <cstdio>
 #include <thread>
 #include <queue>
 #include <mutex>
-#include <vector>
 #include <iostream>
-#include <string.h>
+#include <cstring>
 #include <regex>
 
-#define debugs(s) fprintf(stderr, "%d: %s\n", __LINE__, s); fflush(stderr);
-#define debug(format, ...) fprintf(stderr, "%d: " format "\n", __LINE__, __VA_ARGS__); fflush(stderr);
+#define debug(format, ...) // fprintf(stderr, "%d: " format "\n", __LINE__, __VA_ARGS__); fflush(stderr);
 
 
 std::vector<std::mutex *> read_locks; /* pole zamku promenne velikosti */
@@ -79,9 +76,8 @@ int main(int argv, char* args[]) {
 
     char* re_patterns[re_num];
     long int re_scores[re_num];
-    int i;
 
-    for (i = 2; i < argv; i += 2) {
+    for (int i = 2; i < argv; i += 2) {
         re_patterns[(i - 2) / 2] = args[i];
         re_scores[(i - 2) / 2] = strtol(args[i + 1], NULL, 10);
     }
@@ -151,6 +147,5 @@ int main(int argv, char* args[]) {
     delete main_lock;
     delete line_score_lock;
 
-	printf("everything finished\n");
-	
+    return EXIT_SUCCESS;
 }
